@@ -1,26 +1,30 @@
 import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/auth/session";
-import SignOutButton from "@/components/auth/SignOutButton";
+import AdminViewReset from "@/components/admin/AdminViewReset";
+import AdminSidebarNav from "@/components/admin/AdminSidebarNav";
 
+// Adapted from hardvanta/src/app/admin/layout.js — same background/gradient
+// wrapper, same liquid-blob decoration, same flex container, same sidebar +
+// main structure. Only the auth-guard import path and redirect target
+// (/dashboard instead of /admin) differ, matching this project's own routes
+// established in Phase 1. hardvanta's admin shell has no header/footer/
+// breadcrumb/user-menu of its own, so none is added here — see the Phase 2
+// migration report.
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Dashboard — hardvanta Admin" };
+export const metadata = { title: "Admin — hardvanta" };
 
-// Defense in depth, same pattern as hardvanta/src/app/admin/layout.js:
-// src/proxy.js already gates /dashboard/:path*, this is the second check.
 export default async function DashboardLayout({ children }) {
   const session = await getAdminSession();
   if (!session) redirect("/login?callbackUrl=/dashboard");
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-6 py-4">
-        <span className="text-sm font-semibold text-zinc-900">hardvanta Admin</span>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-zinc-500">{session.user.email}</span>
-          <SignOutButton />
-        </div>
-      </header>
-      <main className="mx-auto max-w-5xl px-6 py-8">{children}</main>
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-graphite to-obsidian">
+      <div className="liquid-blob left-1/4 top-[-15%] h-96 w-96 bg-electric/10" />
+      <div className="container-page relative flex flex-col gap-6 py-8 lg:flex-row">
+        <AdminViewReset />
+        <AdminSidebarNav />
+        <main className="flex-1 min-w-0">{children}</main>
+      </div>
     </div>
   );
 }
