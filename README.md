@@ -1,4 +1,4 @@
-# HVKart Admin AI Development Guide
+# HVKart Admin  Development Guide
 
 ## Project Overview
 
