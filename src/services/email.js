@@ -14,6 +14,12 @@
 // Until RESEND_API_KEY and EMAIL_FROM are both set, emails are logged to the
 // server console instead of being sent — so OTP login still works in local
 // development (read the code from the terminal).
+//
+// Full verbatim re-copy from hardvanta/src/lib/email.js (previously trimmed
+// to 3 auth-only functions in Phase 1 — restored in full for the Orders
+// migration, since sendOrderShippedEmail/OutForDelivery/Delivered/Cancelled
+// and sendRefundInitiatedEmail are needed here, and partial copies of this
+// file already caused drift once).
 import { Resend } from "resend";
 import { formatPrice } from "@/utils/formatPrice";
 
@@ -38,15 +44,15 @@ async function send({ to, subject, html }) {
     // with { data: null, error }. A try/catch alone can't see that, so it
     // must be checked explicitly or a failed send looks identical to a
     // successful one.
-    const { error } = await client.emails.send({ from, to, subject, html });
+    const { data, error } = await client.emails.send({ from, to, subject, html });
     if (error) {
-      console.error("[email] send failed:", error.message || error);
-      return { sent: false, error: error.message };
+      console.error("[email] send failed:", error);
+      return { sent: false, error: error.message || error };
     }
-    return { sent: true };
+    return { sent: true, id: data?.id };
   } catch (err) {
-    console.error("[email] send failed:", err?.message || err);
-    return { sent: false, error: err?.message };
+    console.error("[email] send failed:", err);
+    return { sent: false, error: err?.message || err };
   }
 }
 
@@ -162,13 +168,32 @@ export async function sendWelcomeEmail(to, name) {
 }
 
 export async function sendOrderShippedEmail(to, order) {
+  const orderNumber = order.id.slice(-8).toUpperCase();
+  const greeting = order.user?.name ? `Hi ${order.user.name},` : "Hi there,";
+
+  const detailRow = (label, value) =>
+    value
+      ? `<tr><td style="padding:6px 10px;color:#888;font-size:13px;white-space:nowrap">${label}</td><td style="padding:6px 10px;color:#0a1f44;font-size:14px">${value}</td></tr>`
+      : "";
+
+  const estimatedDelivery = order.estimatedDeliveryAt
+    ? new Date(order.estimatedDeliveryAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
+    : null;
+
+  const details = [
+    detailRow("Courier", order.courierName),
+    detailRow("Tracking number", order.trackingNumber),
+    detailRow("Estimated delivery", estimatedDelivery),
+  ].join("");
+
   return send({
     to,
-    subject: `Your order #${order.id.slice(-8).toUpperCase()} has shipped`,
+    subject: `Your order #${orderNumber} has shipped`,
     html: `
       <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto">
         <h2 style="color:#0a1f44">Your order is on its way! 📦</h2>
-        <p style="color:#444">Order <strong>#${order.id.slice(-8).toUpperCase()}</strong> has been shipped and is heading to you.</p>
+        <p style="color:#444">${greeting} order <strong>#${orderNumber}</strong> has been shipped and is heading to you.</p>
+        ${details ? `<table style="width:100%;border-collapse:collapse;margin:16px 0">${details}</table>` : ""}
         <p style="color:#888;font-size:12px">You can track your order anytime under "My Orders" on hardvanta.</p>
       </div>`,
   });

@@ -219,6 +219,9 @@ model Order {
   outForDeliveryAt  DateTime?
   deliveredAt       DateTime?
   cancelledAt       DateTime?
+  trackingNumber    String?
+  courierName       String?
+  estimatedDeliveryAt DateTime?
   couponCode        String?
   discountAmount    Int         @default(0)
   invoice           Invoice?
