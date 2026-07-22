@@ -7,38 +7,14 @@ defers something instead of resolving it on the spot.
 
 ## Deferred items
 
-### 1. `prisma/schema.prisma` — Order model missing shipping fields
-- **Found during**: pre-Phase-4 drift check (2026-07-23)
-- **Hardvanta state**: uncommitted local change adds to `model Order`:
-  ```prisma
-  trackingNumber    String?
-  courierName       String?
-  estimatedDeliveryAt DateTime?
-  ```
-- **Status in hvkart-admin**: not present — schema copied in Phase 1, before this change.
-- **Why deferred**: belongs to the Orders/Shipping domain, out of scope for every phase so far (Auth, Admin Shell, Products, Categories & Brands).
-- **Action required**: re-copy `prisma/schema.prisma` from hardvanta (verbatim) at the start of the Orders migration phase, after re-confirming hardvanta has committed this change (currently still uncommitted there as of the date above — re-check it's stable before copying).
-
-### 2. `src/lib/email.js` → `src/services/email.js` — shared `send()` helper drift
-- **Found during**: pre-Phase-4 drift check (2026-07-23)
-- **Hardvanta state**: uncommitted local change to the shared `send()` helper:
-  ```diff
-  -    const { error } = await client.emails.send({ from, to, subject, html });
-  +    const { data, error } = await client.emails.send({ from, to, subject, html });
-       if (error) {
-  -      console.error("[email] send failed:", error.message || error);
-  -      return { sent: false, error: error.message };
-  +      console.error("[email] send failed:", error);
-  +      return { sent: false, error: error.message || error };
-       }
-  -    return { sent: true };
-  +    return { sent: true, id: data?.id };
-  ```
-  Also rewrites `sendOrderShippedEmail` to include tracking number / courier / estimated delivery detail rows (depends on deferred item #1's new Order fields).
-- **Status in hvkart-admin**: `services/email.js` has the pre-change `send()` helper and the original (unexpanded) `sendOrderShippedEmail`. The 3 functions currently in use (`sendOtpEmail`, `sendPasswordResetEmail`, `sendWelcomeEmail`) call the pre-change `send()` — functionally fine (still sends/logs correctly), just missing the `data.id` return value and slightly different error-log shape.
-- **Why deferred**: `sendOrderShippedEmail` is Orders/Shipping domain, out of scope. The `send()` helper change is bundled in the same file/commit.
-- **Action required**: re-copy `src/lib/email.js` from hardvanta (verbatim, full file as done in the Phase 1 revision) at the start of the Orders migration phase, once hardvanta commits this change.
+_(none currently outstanding — see Resolved below)_
 
 ## Resolved
 
-_(none yet)_
+### 1. `prisma/schema.prisma` — Order model missing shipping fields
+- **Deferred**: pre-Phase-4 drift check (2026-07-23)
+- **Resolved**: Phase 6 (Orders migration) — re-copied `prisma/schema.prisma` from hardvanta verbatim, adding `trackingNumber`, `courierName`, `estimatedDeliveryAt` to `model Order`. Confirmed byte-identical to hardvanta's current schema after the change. Note: this field addition was still uncommitted in hardvanta at the time of this migration — re-verify hardvanta has since committed it, to avoid the two projects' schemas silently diverging again.
+
+### 2. `src/lib/email.js` → `src/services/email.js` — shared `send()` helper drift
+- **Deferred**: pre-Phase-4 drift check (2026-07-23)
+- **Resolved**: Phase 6 (Orders migration) — full verbatim re-copy of hardvanta's current `src/lib/email.js` (all 13 functions, including the `send()` helper's `data.id`/error-shape change and the expanded `sendOrderShippedEmail`). `services/email.js` no longer a partial/trimmed copy. Same re-verification note as above applies — this was still uncommitted in hardvanta at copy time.
