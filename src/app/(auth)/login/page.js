@@ -411,9 +411,26 @@ function LoginForm() {
   );
 }
 
+// LoginForm calls useSearchParams(), which can't resolve while this route is
+// statically prerendered at build time (Next.js 16 — see
+// node_modules/next/dist/docs/.../use-search-params.md, "Prerendering").
+// Per that doc, the Client Component subtree up to the nearest Suspense
+// boundary renders client-side once a real request is available; without a
+// `fallback` here, React renders nothing for that entire window, so the
+// production build's static HTML shell was empty until client JS hydrated.
+// Providing a fallback (the documented fix) means the initial paint shows
+// this instead of a blank page.
+function LoginPageFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-brand-bg">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-blue border-t-transparent" />
+    </div>
+  );
+}
+
 export default function LoginPage() {
   return (
-    <Suspense>
+    <Suspense fallback={<LoginPageFallback />}>
       <LoginForm />
     </Suspense>
   );
