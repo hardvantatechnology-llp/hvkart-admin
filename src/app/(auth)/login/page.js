@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -29,15 +29,34 @@ function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const callbackUrl = sanitizeCallbackUrl(params.get("callbackUrl"));
-  const justRegistered = params.get("registered") === "1";
   const reduce = useReducedMotion();
+  // useReducedMotion() reads window.matchMedia synchronously on its very
+  // first call, so on the client's first (hydrating) render it can already
+  // return the device's real value while the server — which has no window
+  // and always defaults to null/false — rendered assuming motion is not
+  // reduced. Whenever a visitor's OS actually prefers reduced motion, that
+  // mismatch makes motionProps() below compute different props for the same
+  // render, which React 19 flags as a hydration mismatch and (unlike
+  // React 18) leaves unpatched — freezing the affected element at its SSR'd
+  // opacity:0 forever. Gating on `mounted` means the first client render
+  // always agrees with the server; the real preference only takes effect
+  // after mount, in an ordinary client-side re-render.
+  const [mounted, setMounted] = useState(false);
+  // Standard SSR-safe mount flag — same pattern/rationale as ConfirmModal.jsx
+  // and Toast.jsx. Flagged by eslint-config-next 16's newer
+  // react-hooks/set-state-in-effect rule, but this is the documented way to
+  // defer a browser-only value until after the first client render matches
+  // the server's.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setMounted(true), []);
+  const reduceMotion = mounted && reduce;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState("password");
   const [error, setError] = useState("");
-  const [info, setInfo] = useState(justRegistered ? "Account created! Please sign in to continue." : "");
+  const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -151,9 +170,15 @@ function LoginForm() {
     setForgotStage("done");
   }
 
+  // `animate` stays set in both branches — reduced motion means skip the
+  // enter/exit transition (initial/exit: false snaps straight to the
+  // "animate" variant), not stop animating altogether. Returning {} here
+  // previously left motion.div with no animate target at all once
+  // reduceMotion flipped true, freezing it wherever the fade transition had
+  // last left it (often still near opacity: 0) instead of resolving visible.
   const motionProps = () =>
-    reduce
-      ? {}
+    reduceMotion
+      ? { variants: fadeStep, initial: false, animate: "animate", exit: false, transition: { duration: 0 } }
       : { variants: fadeStep, initial: "initial", animate: "animate", exit: "exit", transition: { duration: 0.2 } };
 
   // Forgot Password Screen
@@ -257,7 +282,7 @@ function LoginForm() {
             {forgotStage === "done" && (
               <motion.div key="done" {...motionProps()} className="text-center py-2">
                 <motion.div
-                  initial={reduce ? false : { scale: 0 }}
+                  initial={reduceMotion ? false : { scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 260, damping: 14 }}
                   className="flex justify-center mb-4"
@@ -288,19 +313,6 @@ function LoginForm() {
         <AnimatePresence mode="wait">
           {step === "password" ? (
             <motion.div key="password" {...motionProps()}>
-              {/* Google */}
-              <button
-                onClick={() => signIn("google", { callbackUrl })}
-                className="flex w-full items-center justify-center gap-3 rounded-xl glass-brand-card py-2.5 text-sm font-semibold text-brand-text hover:shadow-brand-glow transition-all"
-              >
-                <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
-                Continue with Google
-              </button>
-
-              <div className="my-5 flex items-center gap-3 text-xs text-brand-muted">
-                <span className="h-px flex-1 bg-brand-border" /> OR <span className="h-px flex-1 bg-brand-border" />
-              </div>
-
               {info && <p className="mb-4 rounded-xl bg-brand-blue/10 border border-brand-blue/20 px-3 py-2.5 text-sm text-brand-blue">{info}</p>}
               {error && <p className="mb-4 rounded-xl bg-red-500/10 border border-red-500/20 px-3 py-2.5 text-sm text-red-600">{error}</p>}
 
@@ -357,11 +369,6 @@ function LoginForm() {
                   {loading ? "Sending code..." : "Continue"}
                 </Button>
               </form>
-
-              <p className="mt-6 text-center text-sm text-brand-muted">
-                Do not have an account?{" "}
-                <Link href="/register" className="font-semibold text-brand-blue hover:underline">Create one</Link>
-              </p>
             </motion.div>
           ) : (
             <motion.div key="otp" {...motionProps()}>

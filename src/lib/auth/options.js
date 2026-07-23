@@ -1,9 +1,8 @@
-// NextAuth configuration — copied verbatim from hardvanta/src/lib/auth.js.
-// Same providers, same callbacks, same session strategy: this app reads and
-// writes the same User/Account/Session/VerificationToken/LoginOtp tables in
-// the shared database, so a user's credentials behave identically here.
+// NextAuth configuration — adapted from hardvanta/src/lib/auth.js.
+// This admin panel is internal-only: Google sign-in has been removed and
+// authorize() below only ever issues a session for role === "ADMIN". Same
+// User/Account/Session/VerificationToken/LoginOtp tables as hardvanta.
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import { checkRateLimit, getClientIp } from "@/lib/auth/rateLimit";
@@ -23,10 +22,6 @@ export async function getAuthOptions() {
     },
 
     providers: [
-      GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      }),
       CredentialsProvider({
         name: "Credentials",
         credentials: {
@@ -63,6 +58,13 @@ export async function getAuthOptions() {
 
           await prisma.loginOtp.deleteMany({ where: { email, purpose: "LOGIN" } });
 
+          // This admin panel is internal-only — even a valid password + OTP
+          // must not issue a session for a non-ADMIN account. The OTP
+          // request step (src/app/api/auth/otp/request/route.js) already
+          // rejects non-admins before a code is ever sent; this is the
+          // second, authoritative gate right before session creation.
+          if (user.role !== "ADMIN") return null;
+
           return { id: user.id, name: user.name, email: user.email, role: user.role };
         },
       }),
@@ -70,25 +72,12 @@ export async function getAuthOptions() {
 
     callbacks: {
 
-      async jwt({ token, user, account }) {
+      async jwt({ token, user }) {
         if (user) {
           token.id = user.id;
           token.role = user.role ?? "USER";
           token.pwdChangedAt = user.passwordChangedAt ? new Date(user.passwordChangedAt).getTime() : 0;
           token.validatedAt = Date.now();
-        }
-
-        // Google OAuth: first login, fetch the user from the DB.
-        if (account?.provider === "google" && token.email) {
-          const dbUser = await prisma.user.findUnique({
-            where: { email: token.email },
-          });
-          if (dbUser) {
-            token.id = dbUser.id;
-            token.role = dbUser.role ?? "USER";
-            token.pwdChangedAt = dbUser.passwordChangedAt ? new Date(dbUser.passwordChangedAt).getTime() : 0;
-            token.validatedAt = Date.now();
-          }
         }
 
         // Periodically re-sync against the DB so a revoked/downgraded role,
@@ -115,19 +104,6 @@ export async function getAuthOptions() {
           session.user.role = token.role;
         }
         return session;
-      },
-    },
-
-    // Fires once, the first time the PrismaAdapter creates a User row — i.e.
-    // a brand-new Google OAuth signup.
-    events: {
-      async createUser({ user }) {
-        try {
-          const { sendWelcomeEmail } = await import("@/services/email");
-          await sendWelcomeEmail(user.email, user.name);
-        } catch (err) {
-          console.error("[auth] welcome email failed:", err?.message || err);
-        }
       },
     },
 

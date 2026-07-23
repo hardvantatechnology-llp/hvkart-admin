@@ -1,7 +1,8 @@
 // POST /api/auth/otp/request  { email, password }
 // Step 1 of two-factor login: verify the password, then email a 6-digit code.
-// Always returns a generic success to avoid leaking which emails exist.
-// Copied verbatim from hardvanta/src/app/api/auth/otp/request/route.js.
+// Adapted from hardvanta/src/app/api/auth/otp/request/route.js — this admin
+// panel is internal-only, so a valid password for a non-ADMIN account is
+// rejected here (before a code is ever sent) instead of proceeding.
 import { NextResponse } from "next/server";
 import { randomInt } from "crypto";
 import bcrypt from "bcryptjs";
@@ -40,6 +41,17 @@ export async function POST(request) {
     const valid = await bcrypt.compare(password, user?.password || DUMMY_HASH);
     if (!user || !user.password || !valid) {
       return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
+    }
+
+    // This admin panel is internal-only — reject non-admin accounts here,
+    // before a code is ever generated or emailed, so a valid password alone
+    // never gets a non-admin any closer to a session. authorize() in
+    // src/lib/auth/options.js enforces the same rule again at sign-in.
+    if (user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "Access denied. You are not authorized to access the admin panel." },
+        { status: 403 }
+      );
     }
 
     // Generate a 6-digit code valid for 10 minutes using a CSPRNG.
