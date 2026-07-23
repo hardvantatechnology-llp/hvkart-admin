@@ -151,10 +151,10 @@ function LoginForm() {
     setForgotStage("done");
   }
 
-  const motionProps = (key) =>
+  const motionProps = () =>
     reduce
-      ? { key }
-      : { key, variants: fadeStep, initial: "initial", animate: "animate", exit: "exit", transition: { duration: 0.2 } };
+      ? {}
+      : { variants: fadeStep, initial: "initial", animate: "animate", exit: "exit", transition: { duration: 0.2 } };
 
   // Forgot Password Screen
   if (forgotStep) {
@@ -188,7 +188,7 @@ function LoginForm() {
 
           <AnimatePresence mode="wait">
             {forgotStage === "email" && (
-              <motion.div {...motionProps("email")}>
+              <motion.div key="email" {...motionProps()}>
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   <div className="relative">
                     <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted" />
@@ -209,7 +209,7 @@ function LoginForm() {
             )}
 
             {forgotStage === "reset" && (
-              <motion.div {...motionProps("reset")}>
+              <motion.div key="reset" {...motionProps()}>
                 <form onSubmit={handleResetConfirm} className="space-y-4">
                   <input
                     id="forgot-code"
@@ -255,7 +255,7 @@ function LoginForm() {
             )}
 
             {forgotStage === "done" && (
-              <motion.div {...motionProps("done")} className="text-center py-2">
+              <motion.div key="done" {...motionProps()} className="text-center py-2">
                 <motion.div
                   initial={reduce ? false : { scale: 0 }}
                   animate={{ scale: 1 }}
@@ -287,7 +287,7 @@ function LoginForm() {
       <div className="mt-6">
         <AnimatePresence mode="wait">
           {step === "password" ? (
-            <motion.div {...motionProps("password")}>
+            <motion.div key="password" {...motionProps()}>
               {/* Google */}
               <button
                 onClick={() => signIn("google", { callbackUrl })}
@@ -364,7 +364,7 @@ function LoginForm() {
               </p>
             </motion.div>
           ) : (
-            <motion.div {...motionProps("otp")}>
+            <motion.div key="otp" {...motionProps()}>
               {info && <p className="mb-4 rounded-xl bg-brand-blue/10 border border-brand-blue/20 px-3 py-2.5 text-sm text-brand-blue">{info}</p>}
               {error && <p className="mb-4 rounded-xl bg-red-500/10 border border-red-500/20 px-3 py-2.5 text-sm text-red-600">{error}</p>}
 
