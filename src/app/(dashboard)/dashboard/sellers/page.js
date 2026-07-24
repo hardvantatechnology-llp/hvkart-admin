@@ -2,6 +2,8 @@ import { Store, Package, IndianRupee, Boxes } from "lucide-react";
 import { formatPrice } from "@/utils/formatPrice";
 import Pagination, { parsePage } from "@/components/admin/Pagination";
 import AdminStatCard from "@/components/admin/AdminStatCard";
+import PageHeader from "@/components/admin/ui/PageHeader";
+import Badge from "@/components/admin/ui/Badge";
 
 // Adapted from hardvanta/src/app/admin/sellers/page.js — searchParams is
 // a Promise in Next.js 16 (awaited below), import path updated, and
@@ -76,10 +78,7 @@ export default async function SellersPage({ searchParams: searchParamsPromise })
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Sellers</h1>
-        <p className="text-sm text-white/40 mt-0.5">{totalBrands} total sellers/brands</p>
-      </div>
+      <PageHeader title="Sellers" description={`${totalBrands} total sellers/brands`} />
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-6">
@@ -89,55 +88,51 @@ export default async function SellersPage({ searchParams: searchParamsPromise })
       </div>
 
       {/* Sellers Table */}
-      <div className="overflow-hidden rounded-2xl glass-card">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03] text-left text-xs font-bold uppercase tracking-wider text-white/40">
-                <th className="px-5 py-3">Brand / Seller</th>
-                <th className="px-5 py-3">Products</th>
-                <th className="px-5 py-3">Units Sold</th>
-                <th className="px-5 py-3">Revenue</th>
-                <th className="px-5 py-3">Status</th>
+              <tr className="border-b border-admin-border bg-slate-50/80">
+                <th className="admin-th">Brand / Seller</th>
+                <th className="admin-th">Products</th>
+                <th className="admin-th">Units Sold</th>
+                <th className="admin-th">Revenue</th>
+                <th className="admin-th">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-admin-border">
               {sellersData.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-12 text-center text-white/50">
-                    <Store size={32} className="mx-auto mb-2 text-white/20" />
+                  <td colSpan={5} className="px-5 py-12 text-center text-slate-500">
+                    <Store size={32} className="mx-auto mb-2 text-slate-300" />
                     No sellers found
                   </td>
                 </tr>
               ) : (
                 sellersData.map((seller) => (
-                  <tr key={seller.id} className="hover:bg-white/5 transition-colors">
-                    <td className="px-5 py-3">
+                  <tr key={seller.id} className="admin-row-hover">
+                    <td className="admin-td">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5">
-                          <Store size={16} className="text-electric-light" />
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100">
+                          <Store size={16} className="text-admin-accent" />
                         </div>
                         <div>
-                          <p className="font-semibold text-white/90">{seller.name}</p>
-                          <p className="text-xs text-white/40">{seller.slug}</p>
+                          <p className="font-semibold text-slate-900">{seller.name}</p>
+                          <p className="text-xs text-slate-400">{seller.slug}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-3">
-                      <span className="inline-flex items-center gap-1 text-white/50">
+                    <td className="admin-td">
+                      <span className="inline-flex items-center gap-1 text-slate-500">
                         <Package size={13} /> {seller.totalProducts}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-white/50">{seller.totalSold} units</td>
-                    <td className="px-5 py-3 font-bold text-white">{formatPrice(seller.totalRevenue)}</td>
-                    <td className="px-5 py-3">
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                        seller.active
-                          ? "bg-cyan/10 text-cyan"
-                          : "bg-red-500/10 text-red-400"
-                      }`}>
+                    <td className="admin-td text-slate-500">{seller.totalSold} units</td>
+                    <td className="admin-td font-bold text-slate-900">{formatPrice(seller.totalRevenue)}</td>
+                    <td className="admin-td">
+                      <Badge tone={seller.active ? "green" : "red"}>
                         {seller.active ? "Active" : "Inactive"}
-                      </span>
+                      </Badge>
                     </td>
                   </tr>
                 ))

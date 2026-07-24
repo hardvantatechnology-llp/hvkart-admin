@@ -10,7 +10,7 @@ export default function AddAreaButton({ onCreate }) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <Button variant="gradient" onClick={() => setOpen(true)}>
+      <Button variant="enterprise-primary" onClick={() => setOpen(true)}>
         <Plus size={16} /> Add City
       </Button>
       <AddAreaModal open={open} onClose={() => setOpen(false)} onSave={onCreate} />

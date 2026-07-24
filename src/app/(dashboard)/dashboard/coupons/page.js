@@ -8,6 +8,7 @@ import AddCouponButton from "@/components/admin/AddCouponButton";
 import CouponRow from "@/components/admin/CouponRow";
 import { formatPrice } from "@/utils/formatPrice";
 import { buildCouponWhere } from "@/lib/couponFilters";
+import PageHeader from "@/components/admin/ui/PageHeader";
 import { createCoupon, updateCoupon, toggleCouponActive, deleteCoupon } from "./actions";
 
 // Adapted from hardvanta/src/app/admin/coupons/page.js — searchParams is a
@@ -81,16 +82,16 @@ export default async function AdminCouponsPage({ searchParams: searchParamsPromi
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Coupons</h1>
-          <p className="text-sm text-white/40 mt-0.5">{totalCoupons} total coupons</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <ExportButtons endpoint="/api/admin/coupons/export" params={{ filter, q }} />
-          <AddCouponButton onCreate={createCoupon} />
-        </div>
-      </div>
+      <PageHeader
+        title="Coupons"
+        description={`${totalCoupons} total coupons`}
+        actions={
+          <>
+            <ExportButtons endpoint="/api/admin/coupons/export" params={{ filter, q }} />
+            <AddCouponButton onCreate={createCoupon} />
+          </>
+        }
+      />
 
       <div className="grid grid-cols-2 gap-4 mb-6 lg:grid-cols-3 xl:grid-cols-6">
         <AdminStatCard label="Total Coupons" value={totalCoupons} icon={<Ticket size={17} />} glow="electric" />
@@ -106,8 +107,8 @@ export default async function AdminCouponsPage({ searchParams: searchParamsPromi
         <div className="flex flex-wrap gap-1.5">
           <Link
             href={filterHref(null)}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
-              !filter ? "bg-gradient-to-r from-electric to-liquid text-white shadow-glow-electric" : "glass text-white/60 hover:text-white"
+            className={`admin-focus-ring rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+              !filter ? "bg-admin-accent text-white" : "border border-admin-border bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
             All
@@ -116,8 +117,8 @@ export default async function AdminCouponsPage({ searchParams: searchParamsPromi
             <Link
               key={f.key}
               href={filterHref(f.key)}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
-                filter === f.key ? "bg-gradient-to-r from-electric to-liquid text-white shadow-glow-electric" : "glass text-white/60 hover:text-white"
+              className={`admin-focus-ring rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+                filter === f.key ? "bg-admin-accent text-white" : "border border-admin-border bg-white text-slate-600 hover:bg-slate-50"
               }`}
             >
               {f.label}
@@ -126,31 +127,31 @@ export default async function AdminCouponsPage({ searchParams: searchParamsPromi
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl glass-card">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03] text-left text-xs font-bold uppercase tracking-wider text-white/40">
-                <th className="px-5 py-3">Code</th>
-                <th className="px-5 py-3">Description</th>
-                <th className="px-5 py-3">Type</th>
-                <th className="px-5 py-3">Discount</th>
-                <th className="px-5 py-3">Min Order</th>
-                <th className="px-5 py-3">Max Discount</th>
-                <th className="px-5 py-3">Start Date</th>
-                <th className="px-5 py-3">Expiry Date</th>
-                <th className="px-5 py-3">Usage Limit</th>
-                <th className="px-5 py-3">Used Count</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3">Created</th>
-                <th className="px-5 py-3 text-right">Actions</th>
+              <tr className="border-b border-admin-border bg-slate-50/80">
+                <th className="admin-th">Code</th>
+                <th className="admin-th">Description</th>
+                <th className="admin-th">Type</th>
+                <th className="admin-th">Discount</th>
+                <th className="admin-th">Min Order</th>
+                <th className="admin-th">Max Discount</th>
+                <th className="admin-th">Start Date</th>
+                <th className="admin-th">Expiry Date</th>
+                <th className="admin-th">Usage Limit</th>
+                <th className="admin-th">Used Count</th>
+                <th className="admin-th">Status</th>
+                <th className="admin-th">Created</th>
+                <th className="admin-th text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-admin-border">
               {coupons.length === 0 ? (
                 <tr>
-                  <td colSpan={13} className="px-5 py-12 text-center text-white/50">
-                    <Ticket size={32} className="mx-auto mb-2 text-white/20" />
+                  <td colSpan={13} className="px-5 py-12 text-center text-slate-500">
+                    <Ticket size={32} className="mx-auto mb-2 text-slate-300" />
                     No coupons found
                   </td>
                 </tr>

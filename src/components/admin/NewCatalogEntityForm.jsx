@@ -36,12 +36,12 @@ export default function NewCatalogEntityForm({ label, onCreate }) {
           name="name"
           placeholder={`New ${label} name`}
           aria-label={`New ${label} name`}
-          className="rounded-lg glass-card px-3 py-2 text-sm text-white outline-none focus:shadow-glow-electric placeholder:text-white/30"
+          className="admin-input"
           disabled={pending}
         />
-        {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+        {error && <p className="mt-1 text-xs text-admin-danger">{error}</p>}
       </div>
-      <Button type="submit" variant="gradient" disabled={pending}>
+      <Button type="submit" variant="enterprise-primary" loading={pending}>
         <Plus size={16} /> {pending ? "Adding…" : `Add ${label}`}
       </Button>
     </form>

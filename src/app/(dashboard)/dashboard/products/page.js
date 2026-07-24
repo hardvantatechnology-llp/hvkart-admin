@@ -4,6 +4,8 @@ import Pagination, { parsePage } from "@/components/admin/Pagination";
 import AdminSearchInput from "@/components/admin/AdminSearchInput";
 import ProductsTable from "@/components/admin/ProductsTable";
 import Button from "@/components/ui/Button";
+import PageHeader from "@/components/admin/ui/PageHeader";
+import EmptyState from "@/components/admin/ui/EmptyState";
 
 // Adapted from hardvanta/src/app/admin/products/page.js — searchParams is a
 // Promise in Next.js 16 (was a plain object in hardvanta's Next 14), so it's
@@ -44,16 +46,15 @@ export default async function AdminProductsPage({ searchParams: searchParamsProm
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-white">
-          Products ({total})
-        </h1>
-
-        <Button href="/dashboard/products/new" variant="gradient">
-          <Plus size={18} />
-          Add Product
-        </Button>
-      </div>
+      <PageHeader
+        title={`Products (${total})`}
+        actions={
+          <Button href="/dashboard/products/new" variant="enterprise-primary">
+            <Plus size={18} />
+            Add Product
+          </Button>
+        }
+      />
 
       <div className="mb-4">
         <AdminSearchInput
@@ -64,10 +65,12 @@ export default async function AdminProductsPage({ searchParams: searchParamsProm
       </div>
 
       {products.length === 0 ? (
-        <div className="glass-card flex flex-col items-center gap-2 rounded-2xl py-16 text-center">
-          <PackageSearch size={32} className="text-white/20" />
-          <p className="text-white/60">No products found{q ? ` for "${q}"` : ""}.</p>
-        </div>
+        <EmptyState
+          icon={PackageSearch}
+          title="No products found"
+          description={q ? `Nothing matched "${q}". Try a different search.` : "Add your first product to get started."}
+          action={!q ? { label: "Add Product", href: "/dashboard/products/new" } : undefined}
+        />
       ) : (
         <ProductsTable products={products} />
       )}

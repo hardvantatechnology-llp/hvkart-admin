@@ -1,11 +1,12 @@
 import ProductForm from "@/components/admin/ProductForm";
+import PageHeader from "@/components/admin/ui/PageHeader";
 
 export const dynamic = "force-dynamic";
 
 export default function NewProductPage() {
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">Add Product</h1>
+      <PageHeader title="Add Product" />
       <ProductForm />
     </div>
   );

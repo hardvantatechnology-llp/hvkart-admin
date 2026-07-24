@@ -1,4 +1,5 @@
 import DeliverySettingsForm from "@/components/admin/delivery/DeliverySettingsForm";
+import PageHeader from "@/components/admin/ui/PageHeader";
 import { getDeliverySettings } from "@/lib/delivery";
 import { updateDeliverySettings } from "../actions";
 
@@ -11,10 +12,10 @@ export default async function DeliverySettingsPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Delivery Settings</h1>
-        <p className="text-sm text-white/40 mt-0.5">Cutoff time, transit days and display-only shipping figures</p>
-      </div>
+      <PageHeader
+        title="Delivery Settings"
+        description="Cutoff time, transit days and display-only shipping figures"
+      />
       <DeliverySettingsForm settings={settings} onSave={updateDeliverySettings} />
     </div>
   );

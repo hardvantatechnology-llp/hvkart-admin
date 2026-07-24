@@ -55,8 +55,19 @@ export const PAYMENT_STATUS_META = {
   CANCELLED: { label: "Cancelled", className: "bg-white/10 text-white/50", border: "border-white/10" },
 };
 
-// Same statuses, styled for the storefront's light brand palette — /admin
-// (dark theme) keeps using PAYMENT_STATUS_META above unchanged.
+// Same statuses again, styled for the admin panel's premium light theme
+// (soft-50 backgrounds matching Badge's tone system) — kept separate from
+// PAYMENT_STATUS_META above so the dark-glass callers (if any remain) and
+// the storefront's PAYMENT_STATUS_META_BRAND below are unaffected.
+export const PAYMENT_STATUS_META_ADMIN = {
+  PENDING: { label: "Pending", tone: "amber" },
+  SUCCESS: { label: "Paid", tone: "green" },
+  FAILED: { label: "Failed", tone: "red" },
+  REFUNDED: { label: "Refunded", tone: "purple" },
+  CANCELLED: { label: "Cancelled", tone: "slate" },
+};
+
+// Same statuses, styled for the storefront's light brand palette.
 export const PAYMENT_STATUS_META_BRAND = {
   PENDING: { label: "Pending", className: "bg-amber-100 text-amber-700", border: "border-amber-300" },
   SUCCESS: { label: "Paid", className: "bg-brand-blue/10 text-brand-blue", border: "border-brand-blue/20" },

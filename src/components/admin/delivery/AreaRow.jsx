@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import AdminDeleteButton from "@/components/admin/AdminDeleteButton";
+import Badge from "@/components/admin/ui/Badge";
 
 // Copied verbatim from hardvanta/src/components/admin/delivery/AreaRow.jsx.
 export default function AreaRow({ area, onToggleActive, onDelete }) {
@@ -20,23 +21,21 @@ export default function AreaRow({ area, onToggleActive, onDelete }) {
   }
 
   return (
-    <tr className="hover:bg-white/5 transition-colors">
-      <td className="px-5 py-3 font-semibold text-white/90">{area.name}</td>
-      <td className="px-5 py-3 text-white/60">{area._count.pincodes}</td>
-      <td className="px-5 py-3">
+    <tr className="admin-row-hover">
+      <td className="admin-td font-semibold text-slate-900">{area.name}</td>
+      <td className="admin-td text-slate-500">{area._count.pincodes}</td>
+      <td className="admin-td">
         <button
           type="button"
           onClick={handleToggle}
           disabled={pending}
-          className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold transition-colors disabled:opacity-50 ${
-            area.active ? "bg-cyan/10 text-cyan hover:bg-cyan/20" : "bg-red-500/10 text-red-400 hover:bg-red-500/20"
-          }`}
+          className="disabled:opacity-50"
         >
-          {area.active ? "🟢 Active" : "⚪ Disabled"}
+          <Badge tone={area.active ? "green" : "red"} dot>{area.active ? "Active" : "Disabled"}</Badge>
         </button>
-        {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+        {error && <p className="mt-1 text-xs text-admin-danger">{error}</p>}
       </td>
-      <td className="px-5 py-3 text-right">
+      <td className="admin-td text-right">
         <AdminDeleteButton
           onDelete={() => onDelete(area.id)}
           label={area.name}

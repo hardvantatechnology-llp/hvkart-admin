@@ -24,67 +24,67 @@ export default function DeliverySettingsForm({ settings, onSave }) {
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="glass-card max-w-lg space-y-5 rounded-3xl p-6">
+    <form ref={formRef} onSubmit={handleSubmit} className="admin-card max-w-lg space-y-5 p-6">
       <div>
-        <label className="mb-1 block text-xs font-semibold text-white/50">Order cutoff time</label>
+        <label className="admin-label">Order cutoff time</label>
         <input
           type="time"
           name="cutoffTime"
           defaultValue={settings.cutoffTime}
-          className="w-full rounded-lg glass-card px-3 py-2.5 text-sm text-white outline-none focus:shadow-glow-electric"
+          className="admin-input"
         />
-        <p className="mt-1 text-xs text-white/30">Orders placed before this time (IST) deliver the next day; after, one day later.</p>
+        <p className="mt-1 text-xs text-slate-400">Orders placed before this time (IST) deliver the next day; after, one day later.</p>
       </div>
 
       <div>
-        <label className="mb-1 block text-xs font-semibold text-white/50">Extra standard transit days</label>
+        <label className="admin-label">Extra standard transit days</label>
         <input
           type="number"
           name="standardDeliveryDaysToAdd"
           min={0}
           defaultValue={settings.standardDeliveryDaysToAdd}
-          className="w-full rounded-lg glass-card px-3 py-2.5 text-sm text-white outline-none focus:shadow-glow-electric"
+          className="admin-input"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="mb-1 block text-xs font-semibold text-white/50">Free shipping threshold (₹)</label>
+          <label className="admin-label">Free shipping threshold (₹)</label>
           <input
             type="number"
             name="freeShippingThreshold"
             min={0}
             defaultValue={settings.freeShippingThreshold}
-            className="w-full rounded-lg glass-card px-3 py-2.5 text-sm text-white outline-none focus:shadow-glow-electric"
+            className="admin-input"
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold text-white/50">Delivery charge (₹)</label>
+          <label className="admin-label">Delivery charge (₹)</label>
           <input
             type="number"
             name="deliveryCharge"
             min={0}
             defaultValue={settings.deliveryCharge}
-            className="w-full rounded-lg glass-card px-3 py-2.5 text-sm text-white outline-none focus:shadow-glow-electric"
+            className="admin-input"
           />
         </div>
       </div>
-      <p className="text-xs text-white/30">
+      <p className="text-xs text-slate-400">
         Display-only — shown on the delivery info card and cart page. Real checkout shipping cost is unaffected by these two fields.
       </p>
 
-      <div className="flex gap-6 text-sm text-white/70">
+      <div className="flex gap-6 text-sm text-slate-700">
         <label className="flex items-center gap-2">
-          <input type="checkbox" name="codEnabled" defaultChecked={settings.codEnabled} />
+          <input type="checkbox" name="codEnabled" defaultChecked={settings.codEnabled} className="admin-checkbox" />
           Cash on Delivery enabled
         </label>
         <label className="flex items-center gap-2">
-          <input type="checkbox" name="expressEnabled" defaultChecked={settings.expressEnabled} />
+          <input type="checkbox" name="expressEnabled" defaultChecked={settings.expressEnabled} className="admin-checkbox" />
           Express Delivery enabled
         </label>
       </div>
 
-      <Button type="submit" variant="gradient" disabled={pending}>
+      <Button type="submit" variant="enterprise-primary" loading={pending}>
         {pending ? "Saving…" : "Save Settings"}
       </Button>
     </form>

@@ -1,6 +1,7 @@
 import { MapPin } from "lucide-react";
 import AreaRow from "@/components/admin/delivery/AreaRow";
 import AddAreaButton from "@/components/admin/delivery/AddAreaButton";
+import PageHeader from "@/components/admin/ui/PageHeader";
 import { createDeliveryArea, toggleDeliveryAreaActive, deleteDeliveryArea } from "../actions";
 
 // Copied verbatim from hardvanta/src/app/admin/delivery/areas/page.js — only
@@ -18,30 +19,28 @@ export default async function DeliveryAreasPage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Delivery Areas</h1>
-          <p className="text-sm text-white/40 mt-0.5">Cities where delivery is supported (currently Delhi NCR only)</p>
-        </div>
-        <AddAreaButton onCreate={createDeliveryArea} />
-      </div>
+      <PageHeader
+        title="Delivery Areas"
+        description="Cities where delivery is supported (currently Delhi NCR only)"
+        actions={<AddAreaButton onCreate={createDeliveryArea} />}
+      />
 
-      <div className="overflow-hidden rounded-2xl glass-card">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03] text-left text-xs font-bold uppercase tracking-wider text-white/40">
-                <th className="px-5 py-3">City</th>
-                <th className="px-5 py-3">Pincodes</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3 text-right">Actions</th>
+              <tr className="border-b border-admin-border bg-slate-50/80">
+                <th className="admin-th">City</th>
+                <th className="admin-th">Pincodes</th>
+                <th className="admin-th">Status</th>
+                <th className="admin-th text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-admin-border">
               {areas.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-5 py-12 text-center text-white/50">
-                    <MapPin size={32} className="mx-auto mb-2 text-white/20" />
+                  <td colSpan={4} className="px-5 py-12 text-center text-slate-500">
+                    <MapPin size={32} className="mx-auto mb-2 text-slate-300" />
                     No delivery areas yet
                   </td>
                 </tr>

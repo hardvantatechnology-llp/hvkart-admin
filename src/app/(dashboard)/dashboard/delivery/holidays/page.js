@@ -1,6 +1,7 @@
 import { CalendarOff } from "lucide-react";
 import HolidayRow from "@/components/admin/delivery/HolidayRow";
 import AddHolidayButton from "@/components/admin/delivery/AddHolidayButton";
+import PageHeader from "@/components/admin/ui/PageHeader";
 import { createHoliday, deleteHoliday } from "../actions";
 
 // Copied verbatim from hardvanta/src/app/admin/delivery/holidays/page.js —
@@ -14,29 +15,27 @@ export default async function HolidaysPage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Holiday Calendar</h1>
-          <p className="text-sm text-white/40 mt-0.5">No deliveries are estimated on these dates</p>
-        </div>
-        <AddHolidayButton onCreate={createHoliday} />
-      </div>
+      <PageHeader
+        title="Holiday Calendar"
+        description="No deliveries are estimated on these dates"
+        actions={<AddHolidayButton onCreate={createHoliday} />}
+      />
 
-      <div className="overflow-hidden rounded-2xl glass-card">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03] text-left text-xs font-bold uppercase tracking-wider text-white/40">
-                <th className="px-5 py-3">Date</th>
-                <th className="px-5 py-3">Reason</th>
-                <th className="px-5 py-3 text-right">Actions</th>
+              <tr className="border-b border-admin-border bg-slate-50/80">
+                <th className="admin-th">Date</th>
+                <th className="admin-th">Reason</th>
+                <th className="admin-th text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-admin-border">
               {holidays.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="px-5 py-12 text-center text-white/50">
-                    <CalendarOff size={32} className="mx-auto mb-2 text-white/20" />
+                  <td colSpan={3} className="px-5 py-12 text-center text-slate-500">
+                    <CalendarOff size={32} className="mx-auto mb-2 text-slate-300" />
                     No holidays configured
                   </td>
                 </tr>

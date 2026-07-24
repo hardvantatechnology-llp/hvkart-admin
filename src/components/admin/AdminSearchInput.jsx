@@ -46,20 +46,20 @@ export default function AdminSearchInput({ placeholder = "Search…", basePath, 
 
   return (
     <div className="relative w-full max-w-sm">
-      <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+      <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
       <input
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
         aria-label={placeholder}
-        className="w-full rounded-lg glass-card pl-9 pr-8 py-2 text-sm text-white outline-none focus:shadow-glow-electric placeholder:text-white/30"
+        className="admin-input pl-9 pr-8"
       />
       {value && (
         <button
           type="button"
           onClick={clear}
           aria-label="Clear search"
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white"
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
         >
           <X size={14} />
         </button>

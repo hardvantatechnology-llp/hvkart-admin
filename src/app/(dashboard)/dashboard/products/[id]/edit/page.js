@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import ProductForm from "@/components/admin/ProductForm";
+import PageHeader from "@/components/admin/ui/PageHeader";
 
 // Adapted from hardvanta/src/app/admin/products/[id]/edit/page.js — params is
 // a Promise in Next.js 16 (was a plain object in hardvanta's Next 14), so
@@ -20,7 +21,7 @@ export default async function EditProductPage({ params }) {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">Edit Product</h1>
+      <PageHeader title="Edit Product" />
       <ProductForm product={product} />
     </div>
   );

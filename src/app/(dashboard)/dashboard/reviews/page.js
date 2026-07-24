@@ -1,6 +1,7 @@
 import { Star } from "lucide-react";
 import Pagination, { parsePage } from "@/components/admin/Pagination";
 import DeleteReviewButton from "@/components/admin/DeleteReviewButton";
+import PageHeader from "@/components/admin/ui/PageHeader";
 import { deleteReview } from "./actions";
 
 // Adapted from hardvanta/src/app/admin/reviews/page.js — searchParams is
@@ -18,7 +19,7 @@ function StarRating({ rating }) {
         <Star
           key={i}
           size={14}
-          className={i < rating ? "fill-amber-400 text-amber-400" : "text-white/10"}
+          className={i < rating ? "fill-amber-400 text-amber-400" : "text-slate-200"}
         />
       ))}
     </div>
@@ -46,53 +47,50 @@ export default async function ReviewsPage({ searchParams: searchParamsPromise })
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Reviews</h1>
-        <p className="text-sm text-white/40 mt-0.5">{total} total reviews</p>
-      </div>
+      <PageHeader title="Reviews" description={`${total} total reviews`} />
 
-      <div className="overflow-hidden rounded-2xl glass-card">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03] text-left text-xs font-bold uppercase tracking-wider text-white/40">
-                <th className="px-5 py-3">Product</th>
-                <th className="px-5 py-3">Customer</th>
-                <th className="px-5 py-3">Rating</th>
-                <th className="px-5 py-3">Comment</th>
-                <th className="px-5 py-3">Date</th>
-                <th className="px-5 py-3 text-right">Actions</th>
+              <tr className="border-b border-admin-border bg-slate-50/80">
+                <th className="admin-th">Product</th>
+                <th className="admin-th">Customer</th>
+                <th className="admin-th">Rating</th>
+                <th className="admin-th">Comment</th>
+                <th className="admin-th">Date</th>
+                <th className="admin-th text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-admin-border">
               {reviews.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-5 py-12 text-center text-white/50">
-                    <Star size={32} className="mx-auto mb-2 text-white/20" />
+                  <td colSpan={6} className="px-5 py-12 text-center text-slate-500">
+                    <Star size={32} className="mx-auto mb-2 text-slate-300" />
                     No reviews found
                   </td>
                 </tr>
               ) : (
                 reviews.map((review) => (
-                  <tr key={review.id} className="hover:bg-white/5 transition-colors">
-                    <td className="px-5 py-3 font-semibold text-white/90">
+                  <tr key={review.id} className="admin-row-hover">
+                    <td className="admin-td font-semibold text-slate-900">
                       {review.product?.name || "—"}
                     </td>
-                    <td className="px-5 py-3 text-white/50">
+                    <td className="admin-td text-slate-500">
                       {review.user?.name || review.user?.email || "—"}
                     </td>
-                    <td className="px-5 py-3">
+                    <td className="admin-td">
                       <StarRating rating={review.rating} />
                     </td>
-                    <td className="px-5 py-3 max-w-xs text-white/50">
+                    <td className="admin-td max-w-xs text-slate-500">
                       <p className="line-clamp-2">{review.comment || "—"}</p>
                     </td>
-                    <td className="px-5 py-3 text-white/40">
+                    <td className="admin-td text-slate-400">
                       {new Date(review.createdAt).toLocaleDateString("en-IN", {
                         day: "numeric", month: "short", year: "numeric",
                       })}
                     </td>
-                    <td className="px-5 py-3">
+                    <td className="admin-td">
                       <div className="flex justify-end">
                         <DeleteReviewButton id={review.id} onDelete={deleteReview} />
                       </div>

@@ -221,9 +221,9 @@ export default function ProductForm({ product }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl space-y-4 glass-strong rounded-3xl p-6">
+    <form onSubmit={handleSubmit} className="admin-card max-w-2xl space-y-4 p-6">
       {error && (
-        <p className="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2 text-sm text-red-400">{error}</p>
+        <p className="rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-sm text-admin-danger">{error}</p>
       )}
 
       <L label="Name">
@@ -261,9 +261,9 @@ export default function ProductForm({ product }) {
                 name="inStock"
                 checked={form.inStock === true}
                 onChange={() => set("inStock", true)}
-                className="accent-electric"
+                className="admin-checkbox rounded-full"
               />
-              <span className="font-medium text-cyan">In Stock</span>
+              <span className="font-medium text-admin-success">In Stock</span>
             </label>
             <label className="flex cursor-pointer items-center gap-1.5 text-sm">
               <input
@@ -271,9 +271,9 @@ export default function ProductForm({ product }) {
                 name="inStock"
                 checked={form.inStock === false}
                 onChange={() => set("inStock", false)}
-                className="accent-electric"
+                className="admin-checkbox rounded-full"
               />
-              <span className="font-medium text-red-400">Out of Stock</span>
+              <span className="font-medium text-admin-danger">Out of Stock</span>
             </label>
           </div>
         </L>
@@ -281,22 +281,22 @@ export default function ProductForm({ product }) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <L label="Brand">
-          <select className={inputCls} value={form.brandId} onChange={(e) => set("brandId", e.target.value)}>
+          <select className={selectCls} value={form.brandId} onChange={(e) => set("brandId", e.target.value)}>
             {brands.map((b) => (
-              <option key={b.id} value={b.id} className="bg-graphite text-white">{b.name}</option>
+              <option key={b.id} value={b.id}>{b.name}</option>
             ))}
-            <option value={NEW_BRAND} className="bg-graphite text-white">+ Create New Brand</option>
+            <option value={NEW_BRAND}>+ Create New Brand</option>
           </select>
           {creatingBrand && (
             <input className={`${inputCls} mt-2`} value={newBrand} onChange={(e) => setNewBrand(e.target.value)} placeholder="Brand name" />
           )}
         </L>
         <L label="Category">
-          <select className={inputCls} value={form.categoryId} onChange={(e) => set("categoryId", e.target.value)}>
+          <select className={selectCls} value={form.categoryId} onChange={(e) => set("categoryId", e.target.value)}>
             {categories.map((c) => (
-              <option key={c.id} value={c.id} className="bg-graphite text-white">{c.name}</option>
+              <option key={c.id} value={c.id}>{c.name}</option>
             ))}
-            <option value={NEW_CATEGORY} className="bg-graphite text-white">+ Create new category…</option>
+            <option value={NEW_CATEGORY}>+ Create new category…</option>
           </select>
           {creatingCategory && (
             <input
@@ -316,25 +316,25 @@ export default function ProductForm({ product }) {
           {form.images.map((url, idx) => (
             <div
               key={`${url}-${idx}`}
-              className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg glass-card"
+              className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-admin-border bg-slate-50"
             >
               <Image src={imageSrc(url)} alt={`Image ${idx + 1}`} fill sizes="80px" className="object-cover" />
               {idx === 0 && (
-                <span className="absolute bottom-0 left-0 right-0 bg-gradient-to-r from-electric to-liquid py-0.5 text-center text-[9px] font-semibold text-white">
+                <span className="absolute bottom-0 left-0 right-0 bg-admin-accent py-0.5 text-center text-[9px] font-semibold text-white">
                   Main
                 </span>
               )}
               <button
                 type="button"
                 onClick={() => removeImage(idx)}
-                className="absolute right-0.5 top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-obsidian/80 text-white/70 shadow hover:text-red-400"
+                className="absolute right-0.5 top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-slate-900/70 text-white/80 shadow hover:text-red-300"
                 aria-label="Remove image"
               >
                 <X size={12} />
               </button>
             </div>
           ))}
-          <label className="flex h-20 w-20 shrink-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-electric/40 text-xs font-semibold text-electric-light hover:bg-electric/5">
+          <label className="flex h-20 w-20 shrink-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-admin-accent/40 text-xs font-semibold text-admin-accent hover:bg-blue-50">
             <Upload size={18} />
             {uploading ? "…" : "Add"}
             <input
@@ -348,7 +348,7 @@ export default function ProductForm({ product }) {
           </label>
         </div>
         {uploadMsg && (
-          <p className="mt-2 rounded-lg bg-cyan/10 border border-cyan/20 px-3 py-2 text-sm font-medium text-cyan">{uploadMsg}</p>
+          <p className="mt-2 rounded-lg border border-green-100 bg-green-50 px-3 py-2 text-sm font-medium text-admin-success">{uploadMsg}</p>
         )}
         {/* Add by URL */}
         <div className="mt-2 flex gap-2">
@@ -362,27 +362,27 @@ export default function ProductForm({ product }) {
           <button
             type="button"
             onClick={addUrl}
-            className="shrink-0 rounded-lg glass-card px-4 text-sm font-semibold text-white/80 hover:shadow-glow-electric transition-all"
+            className="admin-focus-ring shrink-0 rounded-lg border border-admin-border bg-white px-4 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
           >
             Add
           </button>
         </div>
-        <p className="mt-1 text-xs text-white/40">
+        <p className="mt-1 text-xs text-slate-400">
           Upload multiple photos at once (Ctrl/Cmd-click to select several). The first
           image is used as the main product photo. Drag isn&apos;t needed — just remove and re-add to reorder.
         </p>
       </L>
 
-      <label className="flex items-center gap-2 text-sm text-white/80">
-        <input type="checkbox" checked={form.featured} onChange={(e) => set("featured", e.target.checked)} className="accent-electric" />
+      <label className="flex items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" checked={form.featured} onChange={(e) => set("featured", e.target.checked)} className="admin-checkbox" />
         Featured product (shows on homepage)
       </label>
 
       <div className="flex gap-3 pt-2">
-        <Button type="submit" variant="gradient" disabled={loading}>
+        <Button type="submit" variant="enterprise-primary" loading={loading}>
           {loading ? "Saving…" : isEdit ? "Save changes" : "Create product"}
         </Button>
-        <Button type="button" variant="glass" onClick={() => router.push("/dashboard/products")}>
+        <Button type="button" variant="enterprise-outline" onClick={() => router.push("/dashboard/products")}>
           Cancel
         </Button>
       </div>
@@ -390,12 +390,13 @@ export default function ProductForm({ product }) {
   );
 }
 
-const inputCls = "w-full rounded-lg glass-card px-3 py-2 text-sm text-white outline-none focus:shadow-glow-electric placeholder:text-white/30";
+const inputCls = "admin-input";
+const selectCls = "admin-select";
 
 function L({ label, children }) {
   return (
     <div>
-      <label className="mb-1 block text-sm font-medium text-white/80">{label}</label>
+      <label className="admin-label">{label}</label>
       {children}
     </div>
   );

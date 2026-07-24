@@ -78,9 +78,8 @@ export default function CouponFormModal({ open, onClose, coupon, onSave }) {
     });
   }
 
-  const input =
-    "w-full rounded-lg glass-card px-3 py-2 text-sm text-white outline-none focus:shadow-glow-electric placeholder:text-white/30";
-  const label = "mb-1 block text-xs font-semibold text-white/60";
+  const input = "admin-input";
+  const label = "admin-label";
 
   return createPortal(
     <AnimatePresence>
@@ -89,28 +88,28 @@ export default function CouponFormModal({ open, onClose, coupon, onSave }) {
         animate={{ opacity: 1 }}
         exit={reduce ? undefined : { opacity: 0 }}
         onClick={() => !pending && onClose()}
-        className="fixed inset-0 z-[250] flex items-center justify-center overflow-y-auto bg-obsidian/70 backdrop-blur-md px-4 py-8"
+        className="fixed inset-0 z-[250] flex items-center justify-center overflow-y-auto bg-slate-900/40 backdrop-blur-sm px-4 py-8"
       >
         <motion.div
-          initial={reduce ? false : { opacity: 0, scale: 0.95, y: 12 }}
+          initial={reduce ? false : { opacity: 0, scale: 0.96, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={reduce ? undefined : { opacity: 0, scale: 0.95, y: 12 }}
-          transition={{ type: "spring", stiffness: 340, damping: 28 }}
+          exit={reduce ? undefined : { opacity: 0, scale: 0.96, y: 12 }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
           onClick={(e) => e.stopPropagation()}
           role="dialog"
           aria-modal="true"
-          className="glass-strong w-full max-w-lg rounded-3xl p-6"
+          className="admin-shell w-full max-w-lg rounded-2xl border border-admin-border bg-white p-6 shadow-admin-popover"
         >
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="flex items-center gap-2 text-lg font-bold text-white">
-              <Ticket size={18} className="text-electric-light" />
+            <h3 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+              <Ticket size={18} className="text-admin-accent" />
               {isEdit ? "Edit Coupon" : "Create Coupon"}
             </h3>
             <button
               type="button"
               onClick={onClose}
               disabled={pending}
-              className="rounded-lg p-1.5 text-white/50 hover:bg-white/10 hover:text-white"
+              className="admin-focus-ring rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-900"
               aria-label="Close"
             >
               <X size={18} />
@@ -134,14 +133,14 @@ export default function CouponFormModal({ open, onClose, coupon, onSave }) {
               </div>
               <div>
                 <label className={label} htmlFor="coupon-active">Status</label>
-                <label className="flex items-center gap-2 rounded-lg glass-card px-3 py-2 text-sm text-white">
+                <label className="flex items-center gap-2 rounded-lg border border-admin-border bg-white px-3 py-2 text-sm text-slate-700">
                   <input
                     id="coupon-active"
                     name="active"
                     type="checkbox"
                     defaultChecked={coupon ? coupon.active : true}
                     disabled={pending}
-                    className="h-4 w-4 accent-electric"
+                    className="admin-checkbox"
                   />
                   Active
                 </label>
@@ -164,11 +163,11 @@ export default function CouponFormModal({ open, onClose, coupon, onSave }) {
             <div>
               <span className={label}>Discount Type *</span>
               <div className="flex gap-2">
-                <label className={`flex-1 cursor-pointer rounded-lg px-3 py-2 text-center text-sm font-semibold transition-colors ${type === "flat" ? "bg-gradient-to-r from-electric to-liquid text-white" : "glass-card text-white/60"}`}>
+                <label className={`flex-1 cursor-pointer rounded-lg px-3 py-2 text-center text-sm font-semibold transition-colors ${type === "flat" ? "bg-admin-accent text-white" : "border border-admin-border bg-white text-slate-600 hover:bg-slate-50"}`}>
                   <input type="radio" name="type" value="flat" checked={type === "flat"} onChange={() => setType("flat")} disabled={pending} className="sr-only" />
                   Flat (₹)
                 </label>
-                <label className={`flex-1 cursor-pointer rounded-lg px-3 py-2 text-center text-sm font-semibold transition-colors ${type === "percent" ? "bg-gradient-to-r from-electric to-liquid text-white" : "glass-card text-white/60"}`}>
+                <label className={`flex-1 cursor-pointer rounded-lg px-3 py-2 text-center text-sm font-semibold transition-colors ${type === "percent" ? "bg-admin-accent text-white" : "border border-admin-border bg-white text-slate-600 hover:bg-slate-50"}`}>
                   <input type="radio" name="type" value="percent" checked={type === "percent"} onChange={() => setType("percent")} disabled={pending} className="sr-only" />
                   Percentage (%)
                 </label>
@@ -260,18 +259,18 @@ export default function CouponFormModal({ open, onClose, coupon, onSave }) {
               </div>
             </div>
 
-            {error && <p className="text-sm font-medium text-red-400">{error}</p>}
+            {error && <p className="text-sm font-medium text-admin-danger">{error}</p>}
 
             <div className="flex gap-3 pt-2">
               <button
                 type="button"
                 onClick={onClose}
                 disabled={pending}
-                className="flex-1 rounded-xl glass-card py-2.5 text-sm font-semibold text-white/70 hover:text-white transition-colors disabled:opacity-50"
+                className="admin-focus-ring flex-1 rounded-lg border border-admin-border bg-white py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
               >
                 Cancel
               </button>
-              <Button type="submit" variant="gradient" disabled={pending} className="flex-1 justify-center">
+              <Button type="submit" variant="enterprise-primary" loading={pending} className="flex-1 justify-center">
                 {pending ? "Saving…" : isEdit ? "Save Changes" : "Create Coupon"}
               </Button>
             </div>

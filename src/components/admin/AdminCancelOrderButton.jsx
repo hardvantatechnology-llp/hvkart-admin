@@ -48,7 +48,7 @@ export default function AdminCancelOrderButton({ id, status }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 rounded-lg glass-card px-3 py-1.5 text-xs font-semibold text-red-400 hover:bg-red-500/10 transition-colors"
+        className="admin-focus-ring flex items-center gap-1.5 rounded-lg border border-admin-border bg-white px-3 py-1.5 text-xs font-semibold text-admin-danger transition-colors hover:bg-red-50"
       >
         <XCircle size={14} /> Cancel Order
       </button>

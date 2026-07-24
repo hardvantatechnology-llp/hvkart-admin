@@ -12,7 +12,7 @@ export default function LogoutButton() {
     <button
       type="button"
       onClick={() => signOut({ callbackUrl: "/login" })}
-      className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-white/50 hover:bg-white/5 hover:text-white transition-colors"
+      className="admin-focus-ring flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
     >
       <LogOut size={16} /> Log out
     </button>

@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { Pencil } from "lucide-react";
 import AdminDeleteButton from "@/components/admin/AdminDeleteButton";
+import Badge from "@/components/admin/ui/Badge";
 import PincodeFormModal from "./PincodeFormModal";
 
 // Copied verbatim from hardvanta/src/components/admin/delivery/PincodeRow.jsx.
@@ -24,31 +25,29 @@ export default function PincodeRow({ pincode, areas, onUpdate, onToggleActive, o
 
   return (
     <>
-      <tr className="hover:bg-white/5 transition-colors">
-        <td className="px-5 py-3 font-semibold text-white/90 whitespace-nowrap">{pincode.code}</td>
-        <td className="px-5 py-3 text-white/60">{pincode.areaLabel}</td>
-        <td className="px-5 py-3 text-white/60 whitespace-nowrap">{pincode.deliveryArea.name}</td>
-        <td className="px-5 py-3 text-white/60">{pincode.codAvailable ? "✅" : "—"}</td>
-        <td className="px-5 py-3 text-white/60">{pincode.expressAvailable ? "✅" : "—"}</td>
-        <td className="px-5 py-3">
+      <tr className="admin-row-hover">
+        <td className="admin-td whitespace-nowrap font-semibold text-slate-900">{pincode.code}</td>
+        <td className="admin-td text-slate-500">{pincode.areaLabel}</td>
+        <td className="admin-td whitespace-nowrap text-slate-500">{pincode.deliveryArea.name}</td>
+        <td className="admin-td text-slate-500">{pincode.codAvailable ? "✅" : "—"}</td>
+        <td className="admin-td text-slate-500">{pincode.expressAvailable ? "✅" : "—"}</td>
+        <td className="admin-td">
           <button
             type="button"
             onClick={handleToggle}
             disabled={pending}
-            className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold transition-colors disabled:opacity-50 ${
-              pincode.active ? "bg-cyan/10 text-cyan hover:bg-cyan/20" : "bg-red-500/10 text-red-400 hover:bg-red-500/20"
-            }`}
+            className="disabled:opacity-50"
           >
-            {pincode.active ? "🟢 Active" : "⚪ Disabled"}
+            <Badge tone={pincode.active ? "green" : "red"} dot>{pincode.active ? "Active" : "Disabled"}</Badge>
           </button>
-          {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+          {error && <p className="mt-1 text-xs text-admin-danger">{error}</p>}
         </td>
-        <td className="px-5 py-3">
+        <td className="admin-td">
           <div className="flex items-center justify-end gap-3">
             <button
               type="button"
               onClick={() => setEditOpen(true)}
-              className="text-white/40 hover:text-electric-light"
+              className="text-slate-400 hover:text-admin-accent"
               aria-label={`Edit ${pincode.code}`}
               title="Edit"
             >

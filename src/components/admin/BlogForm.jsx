@@ -18,7 +18,7 @@ function slugify(text) {
     .replace(/-+/g, "-");
 }
 
-const inputCls = "w-full rounded-lg glass-card px-3.5 py-2.5 text-sm text-white outline-none focus:shadow-glow-electric placeholder:text-white/30";
+const inputCls = "admin-input";
 
 export default function BlogForm({ initial }) {
   const router = useRouter();
@@ -94,10 +94,10 @@ export default function BlogForm({ initial }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl space-y-5 glass-strong rounded-3xl p-6">
+    <form onSubmit={handleSubmit} className="admin-card max-w-2xl space-y-5 p-6">
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-white/80">Title *</label>
+        <label className="admin-label">Title *</label>
         <input
           required
           type="text"
@@ -109,7 +109,7 @@ export default function BlogForm({ initial }) {
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-white/80">Slug *</label>
+        <label className="admin-label">Slug *</label>
         <input
           required
           type="text"
@@ -118,12 +118,12 @@ export default function BlogForm({ initial }) {
           className={inputCls}
           placeholder="getting-started-with-esp32"
         />
-        <p className="mt-1 text-xs text-white/40">URL: /blogs/{form.slug || "..."}</p>
+        <p className="mt-1 text-xs text-slate-400">URL: /blogs/{form.slug || "..."}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-white/80">Category</label>
+          <label className="admin-label">Category</label>
           <input
             type="text"
             value={form.category}
@@ -132,7 +132,7 @@ export default function BlogForm({ initial }) {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-white/80">Author</label>
+          <label className="admin-label">Author</label>
           <input
             type="text"
             value={form.author}
@@ -143,7 +143,7 @@ export default function BlogForm({ initial }) {
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-white/80">Excerpt *</label>
+        <label className="admin-label">Excerpt *</label>
         <textarea
           required
           rows={2}
@@ -155,7 +155,7 @@ export default function BlogForm({ initial }) {
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-white/80">Content *</label>
+        <label className="admin-label">Content *</label>
         <textarea
           required
           rows={10}
@@ -167,15 +167,15 @@ export default function BlogForm({ initial }) {
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-white/80">Cover Image</label>
+        <label className="admin-label">Cover Image</label>
         {form.coverImage && (
-          <div className="mb-3 overflow-hidden rounded-lg glass-card p-1">
+          <div className="mb-3 overflow-hidden rounded-lg border border-admin-border p-1">
             {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary uploaded URL, may not be on the next/image host allowlist */}
             <img src={form.coverImage} alt="Preview" className="h-32 w-full rounded object-cover" />
           </div>
         )}
         <div className="flex items-center gap-3">
-          <label className="flex cursor-pointer items-center gap-2 rounded-lg bg-gradient-to-r from-electric to-liquid px-4 py-2.5 text-sm font-semibold text-white shadow-glow-electric hover:brightness-110 transition-all">
+          <label className="flex cursor-pointer items-center gap-2 rounded-lg bg-admin-accent px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-admin-accent-dark">
             {uploading && <Loader2 size={15} className="animate-spin" />}
             {uploading ? "Uploading..." : "Upload photo from device"}
             <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
@@ -190,23 +190,23 @@ export default function BlogForm({ initial }) {
         />
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-white/80">
+      <label className="flex items-center gap-2 text-sm text-slate-700">
         <input
           type="checkbox"
           checked={form.published}
           onChange={(e) => update("published", e.target.checked)}
-          className="h-4 w-4 rounded accent-electric"
+          className="admin-checkbox"
         />
         Published (visible on the site)
       </label>
 
-      {error && <p className="text-sm font-medium text-red-400">{error}</p>}
+      {error && <p className="text-sm font-medium text-admin-danger">{error}</p>}
 
       <div className="flex gap-3">
-        <Button type="submit" variant="gradient" disabled={saving}>
+        <Button type="submit" variant="enterprise-primary" loading={saving}>
           {saving ? "Saving..." : isEdit ? "Save changes" : "Create Blog"}
         </Button>
-        <Button type="button" variant="glass" onClick={() => router.push("/dashboard/blogs")}>
+        <Button type="button" variant="enterprise-outline" onClick={() => router.push("/dashboard/blogs")}>
           Cancel
         </Button>
       </div>

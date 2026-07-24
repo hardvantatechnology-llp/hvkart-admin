@@ -5,6 +5,7 @@ import AdminStatCard from "@/components/admin/AdminStatCard";
 import AddAdminButton from "@/components/admin/AddAdminButton";
 import AdminUserRow from "@/components/admin/AdminUserRow";
 import { getAdminSession } from "@/lib/auth/session";
+import PageHeader from "@/components/admin/ui/PageHeader";
 import { createAdmin, updateAdmin, toggleAdminActive, deleteAdmin, resetAdminPassword } from "./actions";
 
 // New page — no Hardvanta equivalent (Admin Users management is a
@@ -51,13 +52,11 @@ export default async function AdminsPage({ searchParams: searchParamsPromise }) 
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Admins</h1>
-          <p className="text-sm text-white/40 mt-0.5">{totalAdmins} total admin accounts</p>
-        </div>
-        <AddAdminButton onCreate={createAdmin} />
-      </div>
+      <PageHeader
+        title="Admins"
+        description={`${totalAdmins} total admin accounts`}
+        actions={<AddAdminButton onCreate={createAdmin} />}
+      />
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         <AdminStatCard label="Total Admins" value={totalAdmins} icon={<ShieldCheck size={17} />} glow="electric" />
@@ -69,24 +68,24 @@ export default async function AdminsPage({ searchParams: searchParamsPromise }) 
         <AdminSearchInput placeholder="Search by name or email…" basePath="/dashboard/admins" searchParams={searchParams} />
       </div>
 
-      <div className="overflow-hidden rounded-2xl glass-card">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03] text-left text-xs font-bold uppercase tracking-wider text-white/40">
-                <th className="px-5 py-3">Name</th>
-                <th className="px-5 py-3">Email</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3">Last Login</th>
-                <th className="px-5 py-3">Created</th>
-                <th className="px-5 py-3 text-right">Actions</th>
+              <tr className="border-b border-admin-border bg-slate-50/80">
+                <th className="admin-th">Name</th>
+                <th className="admin-th">Email</th>
+                <th className="admin-th">Status</th>
+                <th className="admin-th">Last Login</th>
+                <th className="admin-th">Created</th>
+                <th className="admin-th text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-admin-border">
               {admins.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-5 py-12 text-center text-white/50">
-                    <ShieldCheck size={32} className="mx-auto mb-2 text-white/20" />
+                  <td colSpan={6} className="px-5 py-12 text-center text-slate-500">
+                    <ShieldCheck size={32} className="mx-auto mb-2 text-slate-300" />
                     No admins found
                   </td>
                 </tr>

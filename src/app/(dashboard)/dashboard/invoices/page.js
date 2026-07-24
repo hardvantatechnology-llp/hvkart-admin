@@ -2,6 +2,8 @@ import { FileText } from "lucide-react";
 import { formatPrice } from "@/utils/formatPrice";
 import { formatDate } from "@/utils/formatDateTime";
 import Pagination, { parsePage } from "@/components/admin/Pagination";
+import PageHeader from "@/components/admin/ui/PageHeader";
+import EmptyState from "@/components/admin/ui/EmptyState";
 
 // Adapted from hardvanta/src/app/admin/invoices/page.js — searchParams is a
 // Promise in Next.js 16 (awaited below), import path updated, and
@@ -37,50 +39,42 @@ export default async function InvoicesPage({ searchParams: searchParamsPromise }
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Invoices</h1>
-        <p className="text-sm text-white/40 mt-0.5">{total} total invoices</p>
-      </div>
+      <PageHeader title="Invoices" description={`${total} total invoices`} />
 
-      <div className="overflow-hidden rounded-2xl glass-card">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03] text-left text-xs font-bold uppercase tracking-wider text-white/40">
-                <th className="px-5 py-3">Invoice #</th>
-                <th className="px-5 py-3">Customer</th>
-                <th className="px-5 py-3">Subtotal</th>
-                <th className="px-5 py-3">Tax</th>
-                <th className="px-5 py-3">Total</th>
-                <th className="px-5 py-3">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/10">
-              {invoices.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-5 py-12 text-center text-white/50">
-                    <FileText size={32} className="mx-auto mb-2 text-white/20" />
-                    No invoices found
-                  </td>
+      {invoices.length === 0 ? (
+        <EmptyState icon={FileText} title="No invoices found" />
+      ) : (
+        <div className="admin-card overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-admin-border bg-slate-50/80">
+                  <th className="admin-th">Invoice #</th>
+                  <th className="admin-th">Customer</th>
+                  <th className="admin-th">Subtotal</th>
+                  <th className="admin-th">Tax</th>
+                  <th className="admin-th">Total</th>
+                  <th className="admin-th">Date</th>
                 </tr>
-              ) : (
-                invoices.map((inv) => (
-                  <tr key={inv.id} className="hover:bg-white/5 transition-colors">
-                    <td className="px-5 py-3 font-bold text-electric-light">{inv.invoiceNumber}</td>
-                    <td className="px-5 py-3 text-white/50">{inv.order?.user?.name || "—"}</td>
-                    <td className="px-5 py-3 text-white/80">{formatPrice(inv.subtotal)}</td>
-                    <td className="px-5 py-3 text-white/80">{formatPrice(inv.tax)}</td>
-                    <td className="px-5 py-3 font-bold text-white">{formatPrice(inv.total)}</td>
-                    <td className="px-5 py-3 text-white/40">
+              </thead>
+              <tbody className="divide-y divide-admin-border">
+                {invoices.map((inv) => (
+                  <tr key={inv.id} className="admin-row-hover">
+                    <td className="admin-td font-bold text-admin-accent">{inv.invoiceNumber}</td>
+                    <td className="admin-td text-slate-500">{inv.order?.user?.name || "—"}</td>
+                    <td className="admin-td text-slate-700">{formatPrice(inv.subtotal)}</td>
+                    <td className="admin-td text-slate-700">{formatPrice(inv.tax)}</td>
+                    <td className="admin-td font-bold text-slate-900">{formatPrice(inv.total)}</td>
+                    <td className="admin-td text-slate-400">
                       {formatDate(inv.createdAt)}
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
 
       <Pagination page={page} totalPages={totalPages} basePath="/dashboard/invoices" />
     </div>

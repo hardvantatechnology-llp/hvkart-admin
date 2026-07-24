@@ -1,4 +1,5 @@
 import { Settings } from "lucide-react";
+import PageHeader from "@/components/admin/ui/PageHeader";
 
 // Adapted from hardvanta/src/app/admin/settings/page.js — import paths
 // updated only (no searchParams, no route remapping needed beyond location).
@@ -15,68 +16,65 @@ export default async function SettingsPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-sm text-white/40 mt-0.5">Store configuration</p>
-      </div>
+      <PageHeader title="Settings" description="Store configuration" />
 
       <div className="space-y-4">
         {/* GST Details */}
-        <div className="rounded-2xl glass-card p-6">
-          <h2 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-            <Settings size={18} className="text-electric-light" /> GST Details
+        <div className="admin-card p-6">
+          <h2 className="mb-4 flex items-center gap-2 text-base font-bold text-slate-900">
+            <Settings size={18} className="text-admin-accent" /> GST Details
           </h2>
           {gst ? (
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <p className="text-xs text-white/40 uppercase font-semibold">Company</p>
-                <p className="font-semibold text-white/90 mt-0.5">{gst.companyName}</p>
+                <p className="text-xs font-semibold uppercase text-slate-400">Company</p>
+                <p className="mt-0.5 font-semibold text-slate-900">{gst.companyName}</p>
               </div>
               <div>
-                <p className="text-xs text-white/40 uppercase font-semibold">GST Number</p>
-                <p className="font-semibold text-white/90 mt-0.5">{gst.gstNumber}</p>
+                <p className="text-xs font-semibold uppercase text-slate-400">GST Number</p>
+                <p className="mt-0.5 font-semibold text-slate-900">{gst.gstNumber}</p>
               </div>
               <div>
-                <p className="text-xs text-white/40 uppercase font-semibold">PAN</p>
-                <p className="font-semibold text-white/90 mt-0.5">{gst.panNumber || "—"}</p>
+                <p className="text-xs font-semibold uppercase text-slate-400">PAN</p>
+                <p className="mt-0.5 font-semibold text-slate-900">{gst.panNumber || "—"}</p>
               </div>
               <div>
-                <p className="text-xs text-white/40 uppercase font-semibold">Email</p>
-                <p className="font-semibold text-white/90 mt-0.5">{gst.email || "—"}</p>
+                <p className="text-xs font-semibold uppercase text-slate-400">Email</p>
+                <p className="mt-0.5 font-semibold text-slate-900">{gst.email || "—"}</p>
               </div>
               <div>
-                <p className="text-xs text-white/40 uppercase font-semibold">Phone</p>
-                <p className="font-semibold text-white/90 mt-0.5">{gst.phone || "—"}</p>
+                <p className="text-xs font-semibold uppercase text-slate-400">Phone</p>
+                <p className="mt-0.5 font-semibold text-slate-900">{gst.phone || "—"}</p>
               </div>
               <div>
-                <p className="text-xs text-white/40 uppercase font-semibold">Address</p>
-                <p className="font-semibold text-white/90 mt-0.5">{gst.address}, {gst.city}, {gst.state} - {gst.pincode}</p>
+                <p className="text-xs font-semibold uppercase text-slate-400">Address</p>
+                <p className="mt-0.5 font-semibold text-slate-900">{gst.address}, {gst.city}, {gst.state} - {gst.pincode}</p>
               </div>
             </div>
           ) : (
-            <p className="text-sm text-white/40">No GST details configured yet.</p>
+            <p className="text-sm text-slate-400">No GST details configured yet.</p>
           )}
         </div>
 
         {/* Store Info */}
-        <div className="rounded-2xl glass-card p-6">
-          <h2 className="text-base font-bold text-white mb-4">Store Info</h2>
+        <div className="admin-card p-6">
+          <h2 className="mb-4 text-base font-bold text-slate-900">Store Info</h2>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-xs text-white/40 uppercase font-semibold">Store Name</p>
-              <p className="font-semibold text-white/90 mt-0.5">Hardvanta Technologies </p>
+              <p className="text-xs font-semibold uppercase text-slate-400">Store Name</p>
+              <p className="mt-0.5 font-semibold text-slate-900">Hardvanta Technologies </p>
             </div>
             <div>
-              <p className="text-xs text-white/40 uppercase font-semibold">Support Phone</p>
-              <p className="font-semibold text-white/90 mt-0.5">+91 91705 46395</p>
+              <p className="text-xs font-semibold uppercase text-slate-400">Support Phone</p>
+              <p className="mt-0.5 font-semibold text-slate-900">+91 91705 46395</p>
             </div>
             <div>
-              <p className="text-xs text-white/40 uppercase font-semibold">Free Shipping Above</p>
-              <p className="font-semibold text-white/90 mt-0.5">{formatPrice(delivery.freeShippingThreshold)}</p>
+              <p className="text-xs font-semibold uppercase text-slate-400">Free Shipping Above</p>
+              <p className="mt-0.5 font-semibold text-slate-900">{formatPrice(delivery.freeShippingThreshold)}</p>
             </div>
             <div>
-              <p className="text-xs text-white/40 uppercase font-semibold">Shipping Charge</p>
-              <p className="font-semibold text-white/90 mt-0.5">{formatPrice(delivery.deliveryCharge)}</p>
+              <p className="text-xs font-semibold uppercase text-slate-400">Shipping Charge</p>
+              <p className="mt-0.5 font-semibold text-slate-900">{formatPrice(delivery.deliveryCharge)}</p>
             </div>
           </div>
         </div>

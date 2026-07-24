@@ -20,7 +20,7 @@ export default function ExportButtons({ endpoint = "/api/admin/enquiries/export"
         <a
           key={format}
           href={hrefFor(format)}
-          className="inline-flex items-center gap-1.5 rounded-lg glass-card px-3 py-1.5 text-xs font-semibold text-white/80 hover:text-white hover:shadow-glow-electric transition-all"
+          className="admin-focus-ring inline-flex items-center gap-1.5 rounded-lg border border-admin-border bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
         >
           <Icon size={14} /> Export {label}
         </a>

@@ -4,15 +4,15 @@ import { useState, useTransition } from "react";
 import { Pencil } from "lucide-react";
 import AdminDeleteButton from "./AdminDeleteButton";
 import CouponFormModal from "./CouponFormModal";
+import Badge from "./ui/Badge";
 import { formatPrice } from "@/utils/formatPrice";
 import { getComputedStatus } from "@/lib/couponEngine";
 
-// Copied verbatim from hardvanta/src/components/admin/CouponRow.jsx.
-const STATUS_STYLES = {
-  ACTIVE: "bg-cyan/10 text-cyan",
-  INACTIVE: "bg-white/10 text-white/60",
-  EXPIRED: "bg-red-500/10 text-red-400",
-  SCHEDULED: "bg-amber-500/10 text-amber-300",
+const STATUS_TONE = {
+  ACTIVE: "green",
+  INACTIVE: "slate",
+  EXPIRED: "red",
+  SCHEDULED: "amber",
 };
 
 const STATUS_LABELS = {
@@ -47,45 +47,41 @@ export default function CouponRow({ coupon, onUpdate, onToggleActive, onDelete }
 
   return (
     <>
-      <tr className="hover:bg-white/5 transition-colors align-top">
-        <td className="px-5 py-3 font-semibold text-white/90 whitespace-nowrap">{coupon.code}</td>
-        <td className="px-5 py-3 text-white/50 max-w-xs truncate" title={coupon.description || ""}>{coupon.description || "—"}</td>
-        <td className="px-5 py-3 text-white/60 whitespace-nowrap">{coupon.type === "percent" ? "Percentage" : "Flat"}</td>
-        <td className="px-5 py-3 text-white/60 whitespace-nowrap">
+      <tr className="admin-row-hover align-top">
+        <td className="admin-td whitespace-nowrap font-semibold text-slate-900">{coupon.code}</td>
+        <td className="admin-td max-w-xs truncate text-slate-500" title={coupon.description || ""}>{coupon.description || "—"}</td>
+        <td className="admin-td whitespace-nowrap text-slate-600">{coupon.type === "percent" ? "Percentage" : "Flat"}</td>
+        <td className="admin-td whitespace-nowrap text-slate-600">
           {coupon.type === "percent" ? `${coupon.discount}%` : formatPrice(coupon.discount)}
         </td>
-        <td className="px-5 py-3 text-white/60 whitespace-nowrap">{formatPrice(coupon.minOrder)}</td>
-        <td className="px-5 py-3 text-white/60 whitespace-nowrap">{coupon.maxDiscount ? formatPrice(coupon.maxDiscount) : "—"}</td>
-        <td className="px-5 py-3 text-white/40 whitespace-nowrap">{formatDate(coupon.startsAt)}</td>
-        <td className="px-5 py-3 text-white/40 whitespace-nowrap">{formatDate(coupon.expiresAt)}</td>
-        <td className="px-5 py-3 text-white/60 whitespace-nowrap">{coupon.usageLimit ?? "Unlimited"}</td>
-        <td className="px-5 py-3 text-white/60 whitespace-nowrap">{coupon.usedCount}</td>
-        <td className="px-5 py-3">
-          <div className="flex flex-col gap-1">
-            <span className={`inline-block w-fit rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_STYLES[status]}`}>
-              {STATUS_LABELS[status]}
-            </span>
+        <td className="admin-td whitespace-nowrap text-slate-600">{formatPrice(coupon.minOrder)}</td>
+        <td className="admin-td whitespace-nowrap text-slate-600">{coupon.maxDiscount ? formatPrice(coupon.maxDiscount) : "—"}</td>
+        <td className="admin-td whitespace-nowrap text-slate-400">{formatDate(coupon.startsAt)}</td>
+        <td className="admin-td whitespace-nowrap text-slate-400">{formatDate(coupon.expiresAt)}</td>
+        <td className="admin-td whitespace-nowrap text-slate-600">{coupon.usageLimit ?? "Unlimited"}</td>
+        <td className="admin-td whitespace-nowrap text-slate-600">{coupon.usedCount}</td>
+        <td className="admin-td">
+          <div className="flex flex-col items-start gap-1">
+            <Badge tone={STATUS_TONE[status]}>{STATUS_LABELS[status]}</Badge>
             <button
               type="button"
               onClick={handleToggleActive}
               disabled={pending}
-              className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold transition-colors disabled:opacity-50 ${
-                coupon.active ? "bg-cyan/10 text-cyan hover:bg-cyan/20" : "bg-red-500/10 text-red-400 hover:bg-red-500/20"
-              }`}
+              className="disabled:opacity-50"
               title="Click to toggle Active/Inactive"
             >
-              {coupon.active ? "🟢 Active" : "⚪ Inactive"}
+              <Badge tone={coupon.active ? "green" : "slate"} dot>{coupon.active ? "Active" : "Inactive"}</Badge>
             </button>
           </div>
-          {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+          {error && <p className="mt-1 text-xs text-admin-danger">{error}</p>}
         </td>
-        <td className="px-5 py-3 text-white/40 whitespace-nowrap">{formatDate(coupon.createdAt)}</td>
-        <td className="px-5 py-3">
+        <td className="admin-td whitespace-nowrap text-slate-400">{formatDate(coupon.createdAt)}</td>
+        <td className="admin-td">
           <div className="flex items-center justify-end gap-3">
             <button
               type="button"
               onClick={() => setEditOpen(true)}
-              className="text-white/40 hover:text-electric-light"
+              className="text-slate-400 hover:text-admin-accent"
               aria-label={`Edit ${coupon.code}`}
               title="Edit"
             >

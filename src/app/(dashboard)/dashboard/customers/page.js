@@ -1,6 +1,8 @@
 import { Users } from "lucide-react";
 import Pagination, { parsePage } from "@/components/admin/Pagination";
 import AdminSearchInput from "@/components/admin/AdminSearchInput";
+import PageHeader from "@/components/admin/ui/PageHeader";
+import Badge from "@/components/admin/ui/Badge";
 
 // Adapted from hardvanta/src/app/admin/customers/page.js — searchParams is
 // a Promise in Next.js 16 (awaited below), import path updated, and
@@ -49,47 +51,42 @@ export default async function CustomersPage({ searchParams: searchParamsPromise 
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Customers</h1>
-        <p className="text-sm text-white/40 mt-0.5">{total} total customers</p>
-      </div>
+      <PageHeader title="Customers" description={`${total} total customers`} />
 
       <div className="mb-4">
         <AdminSearchInput placeholder="Search by name or email…" basePath="/dashboard/customers" searchParams={searchParams} />
       </div>
 
-      <div className="overflow-hidden rounded-2xl glass-card">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03] text-left text-xs font-bold uppercase tracking-wider text-white/40">
-                <th className="px-5 py-3">Name</th>
-                <th className="px-5 py-3">Email</th>
-                <th className="px-5 py-3">Phone</th>
-                <th className="px-5 py-3">Orders</th>
-                <th className="px-5 py-3">Joined</th>
+              <tr className="border-b border-admin-border bg-slate-50/80">
+                <th className="admin-th">Name</th>
+                <th className="admin-th">Email</th>
+                <th className="admin-th">Phone</th>
+                <th className="admin-th">Orders</th>
+                <th className="admin-th">Joined</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-admin-border">
               {customers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-12 text-center text-white/50">
-                    <Users size={32} className="mx-auto mb-2 text-white/20" />
+                  <td colSpan={5} className="px-5 py-12 text-center text-slate-500">
+                    <Users size={32} className="mx-auto mb-2 text-slate-300" />
                     No customers found
                   </td>
                 </tr>
               ) : (
                 customers.map((user) => (
-                  <tr key={user.id} className="hover:bg-white/5 transition-colors">
-                    <td className="px-5 py-3 font-semibold text-white/90">{user.name || "—"}</td>
-                    <td className="px-5 py-3 text-white/50">{user.email}</td>
-                    <td className="px-5 py-3 text-white/50">{user.phone || "—"}</td>
-                    <td className="px-5 py-3">
-                      <span className="rounded-full bg-electric/10 px-2.5 py-1 text-xs font-semibold text-electric-light">
-                        {user._count.orders} orders
-                      </span>
+                  <tr key={user.id} className="admin-row-hover">
+                    <td className="admin-td font-semibold text-slate-900">{user.name || "—"}</td>
+                    <td className="admin-td text-slate-500">{user.email}</td>
+                    <td className="admin-td text-slate-500">{user.phone || "—"}</td>
+                    <td className="admin-td">
+                      <Badge tone="blue">{user._count.orders} orders</Badge>
                     </td>
-                    <td className="px-5 py-3 text-white/40">
+                    <td className="admin-td text-slate-400">
                       {new Date(user.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                     </td>
                   </tr>

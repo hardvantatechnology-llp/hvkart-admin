@@ -73,9 +73,31 @@ module.exports = {
           muted: "#6B7280",
           border: "#D9DEE5",
         },
+
+        // Premium enterprise admin-panel palette (UI redesign only — scoped
+        // under the `admin-*` namespace so it never touches the storefront
+        // `brand-*`/glass tokens above, which the auth pages still rely on).
+        admin: {
+          bg: "#F8FAFC",
+          sidebar: "#0F172A",
+          "sidebar-hover": "#1E293B",
+          "sidebar-border": "#1E293B",
+          primary: "#0F4C81",
+          "primary-dark": "#0B3A63",
+          accent: "#2563EB",
+          "accent-dark": "#1D4ED8",
+          success: "#16A34A",
+          warning: "#F59E0B",
+          danger: "#DC2626",
+          border: "#E5E7EB",
+          text: "#0F172A",
+          muted: "#64748B",
+          subtle: "#94A3B8",
+        },
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        admin: ["var(--font-inter)", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       boxShadow: {
         card: "0 2px 12px rgba(10, 31, 68, 0.08)",
@@ -89,6 +111,11 @@ module.exports = {
         "brand-glow": "0 0 32px -8px rgba(22, 62, 110, 0.35)",
         "brand-glass": "0 8px 32px -8px rgba(15, 39, 71, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.6)",
         "brand-glass-strong": "0 16px 48px -12px rgba(15, 39, 71, 0.18), inset 0 1px 0 0 rgba(255, 255, 255, 0.7)",
+        // Admin panel — soft, low-contrast elevation only. No colored glows.
+        "admin-card": "0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 1px rgba(15, 23, 42, 0.03)",
+        "admin-card-hover": "0 4px 16px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04)",
+        "admin-popover": "0 12px 32px -8px rgba(15, 23, 42, 0.18), 0 4px 12px -4px rgba(15, 23, 42, 0.08)",
+        "admin-focus": "0 0 0 4px rgba(37, 99, 235, 0.12)",
       },
       borderRadius: {
         "3xl": "1.75rem",

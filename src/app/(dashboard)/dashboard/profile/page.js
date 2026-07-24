@@ -1,6 +1,7 @@
 import { getAdminSession } from "@/lib/auth/session";
 import { formatDateTime } from "@/utils/formatDateTime";
 import ChangePasswordForm from "@/components/admin/ChangePasswordForm";
+import PageHeader from "@/components/admin/ui/PageHeader";
 import { changeOwnPassword } from "./actions";
 
 // New page — no Hardvanta equivalent (this is a hvkart-admin-only,
@@ -15,38 +16,35 @@ export default async function ProfilePage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Profile</h1>
-        <p className="text-sm text-white/40 mt-0.5">Your account details</p>
-      </div>
+      <PageHeader title="Profile" description="Your account details" />
 
-      <div className="space-y-4 max-w-xl">
-        <div className="rounded-2xl glass-card p-6">
-          <h2 className="text-base font-bold text-white mb-4">Account Details</h2>
+      <div className="max-w-xl space-y-4">
+        <div className="admin-card p-6">
+          <h2 className="mb-4 text-base font-bold text-slate-900">Account Details</h2>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-xs text-white/40 uppercase font-semibold">Name</p>
-              <p className="font-semibold text-white/90 mt-0.5">{user?.name || "—"}</p>
+              <p className="text-xs font-semibold uppercase text-slate-400">Name</p>
+              <p className="mt-0.5 font-semibold text-slate-900">{user?.name || "—"}</p>
             </div>
             <div>
-              <p className="text-xs text-white/40 uppercase font-semibold">Email</p>
-              <p className="font-semibold text-white/90 mt-0.5">{user?.email}</p>
+              <p className="text-xs font-semibold uppercase text-slate-400">Email</p>
+              <p className="mt-0.5 font-semibold text-slate-900">{user?.email}</p>
             </div>
             <div>
-              <p className="text-xs text-white/40 uppercase font-semibold">Role</p>
-              <p className="font-semibold text-white/90 mt-0.5">{user?.role}</p>
+              <p className="text-xs font-semibold uppercase text-slate-400">Role</p>
+              <p className="mt-0.5 font-semibold text-slate-900">{user?.role}</p>
             </div>
             <div>
-              <p className="text-xs text-white/40 uppercase font-semibold">Last Login</p>
-              <p className="font-semibold text-white/90 mt-0.5">
+              <p className="text-xs font-semibold uppercase text-slate-400">Last Login</p>
+              <p className="mt-0.5 font-semibold text-slate-900">
                 {user?.lastLoginAt ? formatDateTime(user.lastLoginAt) : "—"}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-2xl glass-card p-6">
-          <h2 className="text-base font-bold text-white mb-4">Change Password</h2>
+        <div className="admin-card p-6">
+          <h2 className="mb-4 text-base font-bold text-slate-900">Change Password</h2>
           <ChangePasswordForm onSubmit={changeOwnPassword} />
         </div>
       </div>

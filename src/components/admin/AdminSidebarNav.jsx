@@ -3,24 +3,21 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   LayoutDashboard, Package, ShoppingCart, Home,
   Users, Tag, Layers, Star, Ticket, Archive,
   Bell, Settings, FileText, CreditCard, Mail, BookOpen,
   TrendingUp, BarChart2, Image as ImageIcon, UserCog, Store,
-  Menu, X, Building2, ClipboardList, CircuitBoard, FileBarChart,
+  X, Building2, ClipboardList, CircuitBoard, FileBarChart,
   MapPin, Hash, SlidersHorizontal, CalendarOff, Send,
-  ShieldCheck, History, UserCircle,
+  ShieldCheck, History, UserCircle, PanelLeftClose, PanelLeftOpen,
 } from "lucide-react";
 import SwitchToUserView from "./SwitchToUserView";
 import LogoutButton from "./LogoutButton";
+import { useAdminShell } from "./AdminShellProvider";
 
-// Adapted from hardvanta/src/components/admin/AdminSidebarNav.jsx — same
-// sections, labels, icons, and order. Only the URL prefix changed
-// (/admin -> /dashboard), matching this project's own protected route root
-// established in Phase 1. Pages not yet migrated will 404 until their phase,
-// same as any nav item pointing at an unbuilt page.
-const SECTIONS = [
+export const SECTIONS = [
   {
     label: "Main",
     items: [
@@ -97,7 +94,9 @@ const SECTIONS = [
 
 export default function AdminSidebarNav() {
   const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const { mobileNavOpen: mobileOpen, setMobileNavOpen: setMobileOpen } = useAdminShell();
+  const [collapsed, setCollapsed] = useState(false);
+  const reduce = useReducedMotion();
 
   function isActive(href) {
     if (href === "/dashboard") return pathname === "/dashboard";
@@ -105,62 +104,165 @@ export default function AdminSidebarNav() {
   }
 
   return (
-    <aside className="lg:w-64 shrink-0">
-      <div className="glass-strong rounded-2xl p-3 lg:sticky lg:top-24">
-        <button
-          type="button"
-          onClick={() => setMobileOpen((v) => !v)}
-          aria-expanded={mobileOpen}
-          aria-controls="admin-sidebar-nav"
-          className="flex w-full items-center justify-between px-3 py-2 text-xs font-semibold uppercase tracking-wide text-white/40 lg:pointer-events-none"
-        >
-          Admin Panel
-          <span className="lg:hidden text-white/60">
-            {mobileOpen ? <X size={16} /> : <Menu size={16} />}
-          </span>
-        </button>
-
-        <nav id="admin-sidebar-nav" className={`space-y-4 ${mobileOpen ? "block" : "hidden"} lg:block`}>
-          {SECTIONS.map((section) => (
-            <div key={section.label}>
-              <p className="px-3 pb-1 text-[10px] font-bold uppercase tracking-widest text-white/40">
-                {section.label}
-              </p>
-              <div className="space-y-0.5">
-                {section.items.map(({ href, label, icon: Icon }) => {
-                  const active = isActive(href);
-                  return (
-                    <Link
-                      key={href}
-                      href={href}
-                      onClick={() => setMobileOpen(false)}
-                      aria-current={active ? "page" : undefined}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                        active
-                          ? "bg-gradient-to-r from-electric to-liquid text-white shadow-glow-electric"
-                          : "text-white/70 hover:bg-white/5 hover:text-white"
-                      }`}
-                    >
-                      <Icon size={16} /> {label}
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-
-          <div className="space-y-1 border-t border-white/10 pt-2">
-            <SwitchToUserView />
-            <Link
-              href="/"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-white/50 hover:bg-white/5 hover:text-white transition-colors"
+    <motion.aside
+      animate={{ width: collapsed ? 84 : 264 }}
+      transition={reduce ? { duration: 0 } : { duration: 0.2, ease: "easeInOut" }}
+      className="hidden shrink-0 lg:block"
+    >
+      <div className="lg:sticky lg:top-6">
+        <div className="rounded-2xl border border-admin-sidebar-border bg-admin-sidebar shadow-[0_1px_0_rgba(255,255,255,0.04)_inset]">
+          <div className="flex items-center justify-between px-4 py-4">
+            {!collapsed && (
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Admin Panel</span>
+            )}
+            <button
+              type="button"
+              onClick={() => setCollapsed((v) => !v)}
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              aria-pressed={collapsed}
+              className="admin-focus-ring ml-auto flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
             >
-              <Home size={16} /> Back to store
-            </Link>
-            <LogoutButton />
+              {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+            </button>
           </div>
-        </nav>
+
+          <nav className="admin-scrollbar max-h-[calc(100vh-7rem)] space-y-5 overflow-y-auto px-3 pb-4">
+            {SECTIONS.map((section) => (
+              <div key={section.label}>
+                {!collapsed && (
+                  <p className="px-3 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                    {section.label}
+                  </p>
+                )}
+                <div className="space-y-0.5">
+                  {section.items.map(({ href, label, icon: Icon }) => {
+                    const active = isActive(href);
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        aria-current={active ? "page" : undefined}
+                        title={collapsed ? label : undefined}
+                        className={`admin-focus-ring group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+                          collapsed ? "justify-center" : ""
+                        } ${
+                          active
+                            ? "bg-white/10 text-white"
+                            : "text-slate-400 hover:bg-white/5 hover:text-white"
+                        }`}
+                      >
+                        {active && (
+                          <span className="absolute left-0 top-1/2 h-4 w-1 -translate-y-1/2 rounded-full bg-admin-accent" aria-hidden="true" />
+                        )}
+                        <Icon size={17} className="shrink-0" />
+                        {!collapsed && <span className="truncate">{label}</span>}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+
+            <div className="space-y-1 border-t border-white/10 pt-3">
+              {!collapsed ? (
+                <>
+                  <SwitchToUserView />
+                  <Link
+                    href="/"
+                    className="admin-focus-ring flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
+                  >
+                    <Home size={17} /> Back to store
+                  </Link>
+                  <LogoutButton />
+                </>
+              ) : (
+                <Link
+                  href="/"
+                  title="Back to store"
+                  className="admin-focus-ring flex items-center justify-center rounded-xl px-3 py-2.5 text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
+                >
+                  <Home size={17} />
+                </Link>
+              )}
+            </div>
+          </nav>
+        </div>
       </div>
-    </aside>
+
+      {/* Mobile drawer — opened via the hamburger button in AdminHeader */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm lg:hidden"
+            onClick={() => setMobileOpen(false)}
+          >
+            <motion.div
+              initial={{ x: -280 }}
+              animate={{ x: 0 }}
+              exit={{ x: -280 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              onClick={(e) => e.stopPropagation()}
+              className="admin-scrollbar h-full w-72 max-w-[85vw] overflow-y-auto bg-admin-sidebar p-4"
+            >
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Admin Panel</span>
+                <button
+                  type="button"
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="Close navigation"
+                  className="admin-focus-ring flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 hover:bg-white/5 hover:text-white"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="space-y-5">
+                {SECTIONS.map((section) => (
+                  <div key={section.label}>
+                    <p className="px-3 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                      {section.label}
+                    </p>
+                    <div className="space-y-0.5">
+                      {section.items.map(({ href, label, icon: Icon }) => {
+                        const active = isActive(href);
+                        return (
+                          <Link
+                            key={href}
+                            href={href}
+                            onClick={() => setMobileOpen(false)}
+                            aria-current={active ? "page" : undefined}
+                            className={`relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+                              active ? "bg-white/10 text-white" : "text-slate-400 hover:bg-white/5 hover:text-white"
+                            }`}
+                          >
+                            {active && (
+                              <span className="absolute left-0 top-1/2 h-4 w-1 -translate-y-1/2 rounded-full bg-admin-accent" aria-hidden="true" />
+                            )}
+                            <Icon size={17} /> {label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+                <div className="space-y-1 border-t border-white/10 pt-3">
+                  <SwitchToUserView />
+                  <Link
+                    href="/"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400 hover:bg-white/5 hover:text-white"
+                  >
+                    <Home size={17} /> Back to store
+                  </Link>
+                  <LogoutButton />
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.aside>
   );
 }

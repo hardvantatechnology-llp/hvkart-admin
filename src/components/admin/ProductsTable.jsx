@@ -8,6 +8,7 @@ import { imageSrc } from "@/utils/imageSrc";
 import { Trash2 } from "lucide-react";
 import DeleteProductButton from "@/components/admin/DeleteProductButton";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import Badge from "@/components/admin/ui/Badge";
 import { useToast } from "@/components/ui/Toast";
 import { useRouter } from "next/navigation";
 
@@ -61,55 +62,55 @@ export default function ProductsTable({ products }) {
   return (
     <>
       {selected.size > 0 && (
-        <div className="mb-3 flex items-center justify-between rounded-xl glass-card px-4 py-2.5">
-          <span className="text-sm font-medium text-white/80">{selected.size} selected</span>
+        <div className="admin-card mb-3 flex items-center justify-between px-4 py-2.5">
+          <span className="text-sm font-medium text-slate-700">{selected.size} selected</span>
           <button
             onClick={() => setConfirmOpen(true)}
-            className="flex items-center gap-1.5 rounded-lg bg-red-500/10 px-3 py-1.5 text-sm font-semibold text-red-400 hover:bg-red-500/20 transition-colors"
+            className="admin-focus-ring flex items-center gap-1.5 rounded-lg bg-red-50 px-3 py-1.5 text-sm font-semibold text-admin-danger transition-colors hover:bg-red-100"
           >
             <Trash2 size={14} /> Delete selected
           </button>
         </div>
       )}
 
-      <div className="overflow-hidden rounded-2xl glass-card">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="border-b border-white/10 bg-white/[0.03] text-left text-xs uppercase text-white/40">
+            <thead className="border-b border-admin-border bg-slate-50/80">
               <tr>
-                <th className="px-4 py-3 w-10">
+                <th className="admin-th w-10">
                   <input
                     type="checkbox"
                     checked={allSelected}
                     onChange={toggleAll}
                     aria-label="Select all products"
-                    className="accent-electric"
+                    className="admin-checkbox"
                   />
                 </th>
-                <th className="px-4 py-3">Product</th>
-                <th className="px-4 py-3">Brand</th>
-                <th className="px-4 py-3">Category</th>
-                <th className="px-4 py-3">Price</th>
-                <th className="px-4 py-3">Stock</th>
-                <th className="px-4 py-3 text-right">Actions</th>
+                <th className="admin-th">Product</th>
+                <th className="admin-th">Brand</th>
+                <th className="admin-th">Category</th>
+                <th className="admin-th">Price</th>
+                <th className="admin-th">Stock</th>
+                <th className="admin-th text-right">Actions</th>
               </tr>
             </thead>
 
-            <tbody>
+            <tbody className="divide-y divide-admin-border">
               {products.map((p) => (
-                <tr key={p.id} className="border-b border-white/10 last:border-0 hover:bg-white/5 transition-colors">
-                  <td className="px-4 py-3">
+                <tr key={p.id} className="admin-row-hover">
+                  <td className="admin-td">
                     <input
                       type="checkbox"
                       checked={selected.has(p.id)}
                       onChange={() => toggleOne(p.id)}
                       aria-label={`Select ${p.name}`}
-                      className="accent-electric"
+                      className="admin-checkbox"
                     />
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="admin-td">
                     <div className="flex items-center gap-3">
-                      <div className="relative h-10 w-10 overflow-hidden rounded bg-white/5">
+                      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-slate-100">
                         <Image
                           src={imageSrc(p.image || "")}
                           alt={p.name}
@@ -118,20 +119,24 @@ export default function ProductsTable({ products }) {
                           className="object-cover"
                         />
                       </div>
-                      <span className="font-medium text-white/90">{p.name}</span>
+                      <span className="font-medium text-slate-900">{p.name}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-white/50">{p.brand?.name || "-"}</td>
-                  <td className="px-4 py-3 text-white/50">{p.category?.name || "-"}</td>
-                  <td className="px-4 py-3 font-semibold text-white">
+                  <td className="admin-td text-slate-500">{p.brand?.name || "-"}</td>
+                  <td className="admin-td text-slate-500">{p.category?.name || "-"}</td>
+                  <td className="admin-td font-semibold text-slate-900">
                     {formatPrice(p.salePrice ?? p.price)}
                   </td>
-                  <td className="px-4 py-3 text-white/70">{p.stock}</td>
-                  <td className="px-4 py-3">
+                  <td className="admin-td">
+                    <Badge tone={p.stock === 0 ? "red" : p.stock <= 5 ? "amber" : "green"} dot>
+                      {p.stock}
+                    </Badge>
+                  </td>
+                  <td className="admin-td">
                     <div className="flex justify-end gap-3">
                       <Link
                         href={`/dashboard/products/${p.id}/edit`}
-                        className="font-semibold text-electric-light hover:text-cyan"
+                        className="font-semibold text-admin-accent hover:text-admin-accent-dark"
                       >
                         Edit
                       </Link>

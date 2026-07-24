@@ -5,6 +5,7 @@ import { Pencil, KeyRound } from "lucide-react";
 import AdminDeleteButton from "./AdminDeleteButton";
 import AdminUserFormModal from "./AdminUserFormModal";
 import ResetAdminPasswordModal from "./ResetAdminPasswordModal";
+import Badge from "./ui/Badge";
 import { formatDateTime } from "@/utils/formatDateTime";
 
 // New file — no Hardvanta equivalent. Row structure and the active/inactive
@@ -30,35 +31,33 @@ export default function AdminUserRow({ admin, currentUserId, onUpdate, onToggleA
 
   return (
     <>
-      <tr className="hover:bg-white/5 transition-colors align-top">
-        <td className="px-5 py-3 font-semibold text-white/90 whitespace-nowrap">
-          {admin.name || "—"} {isSelf && <span className="text-xs font-normal text-white/40">(you)</span>}
+      <tr className="admin-row-hover align-top">
+        <td className="admin-td whitespace-nowrap font-semibold text-slate-900">
+          {admin.name || "—"} {isSelf && <span className="text-xs font-normal text-slate-400">(you)</span>}
         </td>
-        <td className="px-5 py-3 text-white/50">{admin.email}</td>
-        <td className="px-5 py-3">
+        <td className="admin-td text-slate-500">{admin.email}</td>
+        <td className="admin-td">
           <button
             type="button"
             onClick={handleToggleActive}
             disabled={pending || isSelf}
             title={isSelf ? "You cannot disable your own account" : "Click to toggle Active/Disabled"}
-            className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold transition-colors disabled:opacity-50 ${
-              admin.isActive ? "bg-cyan/10 text-cyan hover:bg-cyan/20" : "bg-red-500/10 text-red-400 hover:bg-red-500/20"
-            }`}
+            className="disabled:opacity-50"
           >
-            {admin.isActive ? "🟢 Active" : "⚪ Disabled"}
+            <Badge tone={admin.isActive ? "green" : "red"} dot>{admin.isActive ? "Active" : "Disabled"}</Badge>
           </button>
-          {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+          {error && <p className="mt-1 text-xs text-admin-danger">{error}</p>}
         </td>
-        <td className="px-5 py-3 text-white/40 whitespace-nowrap">
+        <td className="admin-td whitespace-nowrap text-slate-400">
           {admin.lastLoginAt ? formatDateTime(admin.lastLoginAt) : "Never"}
         </td>
-        <td className="px-5 py-3 text-white/40 whitespace-nowrap">{formatDateTime(admin.createdAt)}</td>
-        <td className="px-5 py-3">
+        <td className="admin-td whitespace-nowrap text-slate-400">{formatDateTime(admin.createdAt)}</td>
+        <td className="admin-td">
           <div className="flex items-center justify-end gap-3">
             <button
               type="button"
               onClick={() => setResetOpen(true)}
-              className="text-white/40 hover:text-electric-light"
+              className="text-slate-400 hover:text-admin-accent"
               aria-label={`Reset password for ${admin.email}`}
               title="Reset password"
             >
@@ -67,7 +66,7 @@ export default function AdminUserRow({ admin, currentUserId, onUpdate, onToggleA
             <button
               type="button"
               onClick={() => setEditOpen(true)}
-              className="text-white/40 hover:text-electric-light"
+              className="text-slate-400 hover:text-admin-accent"
               aria-label={`Edit ${admin.email}`}
               title="Edit"
             >

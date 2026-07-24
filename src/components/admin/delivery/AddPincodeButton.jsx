@@ -10,7 +10,7 @@ export default function AddPincodeButton({ areas, onCreate }) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <Button variant="gradient" onClick={() => setOpen(true)}>
+      <Button variant="enterprise-primary" onClick={() => setOpen(true)}>
         <Plus size={16} /> Add Pincode
       </Button>
       <PincodeFormModal open={open} onClose={() => setOpen(false)} areas={areas} onSave={onCreate} />

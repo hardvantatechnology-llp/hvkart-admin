@@ -11,6 +11,7 @@ import {
   Clock3,
 } from "lucide-react";
 import { startOfToday, startOfWeek, startOfMonth } from "@/lib/dateRanges";
+import PageHeader from "@/components/admin/ui/PageHeader";
 
 // Adapted from hardvanta/src/app/admin/enquiries/report/page.js — import
 // path updated only (no searchParams used by this page).
@@ -99,15 +100,11 @@ export default async function EnquiryReportPage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Enquiry Report</h1>
-          <p className="text-sm text-white/40 mt-0.5">
-            Combined stats across B2B / Bulk Orders, Bulk Enquiries, and ATL Kits Enquiries
-          </p>
-        </div>
-        <ExportButtons params={{ type: "all" }} />
-      </div>
+      <PageHeader
+        title="Enquiry Report"
+        description="Combined stats across B2B / Bulk Orders, Bulk Enquiries, and ATL Kits Enquiries"
+        actions={<ExportButtons params={{ type: "all" }} />}
+      />
 
       <div className="grid grid-cols-2 gap-4 mb-6 lg:grid-cols-4">
         {stats.map((s, i) => (
@@ -116,50 +113,50 @@ export default async function EnquiryReportPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-3">
-        <div className="glass-card rounded-2xl p-5">
-          <p className="text-sm text-white/50">B2B / Bulk Orders</p>
-          <p className="mt-2 text-2xl font-bold text-white">{b2bTotal}</p>
+        <div className="admin-card p-5">
+          <p className="text-sm text-slate-500">B2B / Bulk Orders</p>
+          <p className="mt-2 text-2xl font-bold text-slate-900">{b2bTotal}</p>
         </div>
-        <div className="glass-card rounded-2xl p-5">
-          <p className="text-sm text-white/50">Bulk Enquiries</p>
-          <p className="mt-2 text-2xl font-bold text-white">{bulkEnquiryTotal}</p>
+        <div className="admin-card p-5">
+          <p className="text-sm text-slate-500">Bulk Enquiries</p>
+          <p className="mt-2 text-2xl font-bold text-slate-900">{bulkEnquiryTotal}</p>
         </div>
-        <div className="glass-card rounded-2xl p-5">
-          <p className="text-sm text-white/50">ATL Kits Enquiries</p>
-          <p className="mt-2 text-2xl font-bold text-white">{atlTotal}</p>
+        <div className="admin-card p-5">
+          <p className="text-sm text-slate-500">ATL Kits Enquiries</p>
+          <p className="mt-2 text-2xl font-bold text-slate-900">{atlTotal}</p>
         </div>
       </div>
 
-      <div className="glass-strong rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-white/10">
-          <p className="text-xs font-bold uppercase tracking-wider text-electric-light">Most Recent Enquiries</p>
+      <div className="admin-card overflow-hidden">
+        <div className="px-5 py-4 border-b border-admin-border">
+          <p className="text-xs font-bold uppercase tracking-wider text-admin-accent">Most Recent Enquiries</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-left text-xs font-bold uppercase tracking-wider text-white/40">
-                <th className="px-5 py-3">Name</th>
-                <th className="px-5 py-3">Company</th>
-                <th className="px-5 py-3">Source</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3">Date</th>
+              <tr className="border-b border-admin-border bg-slate-50/80">
+                <th className="admin-th">Name</th>
+                <th className="admin-th">Company</th>
+                <th className="admin-th">Source</th>
+                <th className="admin-th">Status</th>
+                <th className="admin-th">Date</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-admin-border">
               {recent.map((r) => (
-                <tr key={`${r.source}-${r.id}`} className="hover:bg-white/5 transition-colors">
-                  <td className="px-5 py-3 font-semibold text-white/90">{r.name}</td>
-                  <td className="px-5 py-3 text-white/60">{r.company}</td>
-                  <td className="px-5 py-3 text-white/40">{r.source}</td>
-                  <td className="px-5 py-3 text-white/60">{ENQUIRY_STATUS_LABELS[r.status] || r.status}</td>
-                  <td className="px-5 py-3 text-white/40">
+                <tr key={`${r.source}-${r.id}`} className="admin-row-hover">
+                  <td className="admin-td font-semibold text-slate-900">{r.name}</td>
+                  <td className="admin-td text-slate-500">{r.company}</td>
+                  <td className="admin-td text-slate-400">{r.source}</td>
+                  <td className="admin-td text-slate-500">{ENQUIRY_STATUS_LABELS[r.status] || r.status}</td>
+                  <td className="admin-td text-slate-400">
                     {new Date(r.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                   </td>
                 </tr>
               ))}
               {recent.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-5 py-8 text-center text-white/40">No enquiries yet.</td>
+                  <td colSpan={5} className="px-5 py-8 text-center text-slate-400">No enquiries yet.</td>
                 </tr>
               )}
             </tbody>

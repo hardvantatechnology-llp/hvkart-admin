@@ -48,7 +48,7 @@ export default function AdminDeleteButton({
           type="button"
           onClick={() => setOpen(true)}
           disabled={disabled}
-          className="text-white/40 hover:text-red-400 transition-colors disabled:opacity-30 disabled:hover:text-white/40"
+          className="admin-focus-ring rounded-lg p-1 text-slate-400 transition-colors hover:text-admin-danger disabled:opacity-30 disabled:hover:text-slate-400"
           aria-label={`Delete ${label}`}
           title={disabled ? disabledTitle : `Delete ${label}`}
         >
@@ -59,7 +59,7 @@ export default function AdminDeleteButton({
           type="button"
           onClick={() => setOpen(true)}
           disabled={disabled}
-          className="flex items-center gap-1.5 font-semibold text-red-400 hover:text-red-300 transition-colors disabled:opacity-30 disabled:hover:text-red-400"
+          className="admin-focus-ring flex items-center gap-1.5 rounded-lg font-semibold text-admin-danger transition-colors hover:text-red-700 disabled:opacity-30 disabled:hover:text-admin-danger"
           title={disabled ? disabledTitle : undefined}
         >
           <Trash2 size={14} /> Delete

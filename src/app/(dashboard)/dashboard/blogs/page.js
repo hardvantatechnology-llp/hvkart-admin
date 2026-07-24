@@ -5,6 +5,8 @@ import { imageSrc } from "@/utils/imageSrc";
 import DeleteBlogButton from "@/components/admin/DeleteBlogButton";
 import Pagination, { parsePage } from "@/components/admin/Pagination";
 import Button from "@/components/ui/Button";
+import PageHeader from "@/components/admin/ui/PageHeader";
+import Badge from "@/components/admin/ui/Badge";
 
 // Adapted from hardvanta/src/app/admin/blogs/page.js — searchParams is a
 // Promise in Next.js 16 (awaited below), import path updated, and all
@@ -37,54 +39,50 @@ export default async function AdminBlogsPage({ searchParams: searchParamsPromise
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Blogs ({total})</h1>
-        <Button href="/dashboard/blogs/new" variant="gradient">
-          <Plus size={18} /> Add Blog
-        </Button>
-      </div>
+      <PageHeader
+        title={`Blogs (${total})`}
+        actions={
+          <Button href="/dashboard/blogs/new" variant="enterprise-primary">
+            <Plus size={18} /> Add Blog
+          </Button>
+        }
+      />
 
-      <div className="overflow-hidden rounded-2xl glass-card">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="border-b border-white/10 bg-white/[0.03] text-left text-xs uppercase text-white/40">
-              <tr>
-                <th className="px-4 py-3">Blog</th>
-                <th className="hidden px-4 py-3 sm:table-cell">Category</th>
-                <th className="hidden px-4 py-3 md:table-cell">Author</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3 text-right">Actions</th>
+            <thead>
+              <tr className="border-b border-admin-border bg-slate-50/80">
+                <th className="admin-th">Blog</th>
+                <th className="admin-th hidden sm:table-cell">Category</th>
+                <th className="admin-th hidden md:table-cell">Author</th>
+                <th className="admin-th">Status</th>
+                <th className="admin-th text-right">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-admin-border">
               {blogs.map((b) => (
-                <tr key={b.id} className="border-b border-white/10 last:border-0 hover:bg-white/5 transition-colors">
-                  <td className="px-4 py-3">
+                <tr key={b.id} className="admin-row-hover">
+                  <td className="admin-td">
                     <div className="flex items-center gap-3">
-                      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded bg-white/5">
+                      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded bg-slate-100">
                         <Image src={imageSrc(b.coverImage)} alt={b.title} fill sizes="40px" className="object-cover" />
                       </div>
-                      <span className="line-clamp-1 font-medium text-white/90">{b.title}</span>
+                      <span className="line-clamp-1 font-medium text-slate-900">{b.title}</span>
                     </div>
                   </td>
-                  <td className="hidden px-4 py-3 text-white/50 sm:table-cell">{b.category}</td>
-                  <td className="hidden px-4 py-3 text-white/50 md:table-cell">{b.author}</td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                        b.published
-                          ? "bg-cyan/10 text-cyan"
-                          : "bg-white/10 text-white/50"
-                      }`}
-                    >
+                  <td className="admin-td hidden text-slate-500 sm:table-cell">{b.category}</td>
+                  <td className="admin-td hidden text-slate-500 md:table-cell">{b.author}</td>
+                  <td className="admin-td">
+                    <Badge tone={b.published ? "green" : "slate"}>
                       {b.published ? "Published" : "Draft"}
-                    </span>
+                    </Badge>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="admin-td">
                     <div className="flex items-center justify-end gap-3">
                       <Link
                         href={`/dashboard/blogs/${b.id}/edit`}
-                        className="font-semibold text-electric-light hover:text-cyan"
+                        className="font-semibold text-admin-accent hover:text-admin-accent-dark"
                       >
                         Edit
                       </Link>

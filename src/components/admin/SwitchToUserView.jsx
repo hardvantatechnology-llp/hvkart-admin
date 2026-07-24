@@ -17,7 +17,7 @@ export default function SwitchToUserView() {
         setUserView(true);
         router.push("/account");
       }}
-      className="flex w-full items-center gap-3 rounded-lg bg-electric/10 px-3 py-2 text-sm font-semibold text-electric-light hover:bg-electric/15 transition-colors"
+      className="admin-focus-ring flex w-full items-center gap-3 rounded-xl bg-admin-accent/15 px-3 py-2.5 text-sm font-semibold text-blue-300 transition-colors hover:bg-admin-accent/25"
     >
       <UserCog size={16} /> Switch to User View
     </button>

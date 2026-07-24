@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { Pencil, Check, X } from "lucide-react";
 import AdminDeleteButton from "./AdminDeleteButton";
+import Badge from "./ui/Badge";
 
 /**
  * One editable table row shared by the Categories and Brands admin pages.
@@ -54,8 +55,8 @@ export default function CatalogEntityRow({ item, productCount, onUpdate, onToggl
   }
 
   return (
-    <tr className="hover:bg-white/5 transition-colors">
-      <td className="px-5 py-3 font-semibold text-white/90">
+    <tr className="admin-row-hover">
+      <td className="admin-td font-semibold text-slate-900">
         {editing ? (
           <div className="flex items-center gap-2">
             <input
@@ -67,14 +68,14 @@ export default function CatalogEntityRow({ item, productCount, onUpdate, onToggl
                 if (e.key === "Escape") cancelEdit();
               }}
               aria-label={`Rename ${item.name}`}
-              className="w-full rounded-lg glass-card px-2 py-1 text-sm text-white outline-none focus:shadow-glow-electric"
+              className="admin-input w-full py-1"
               disabled={pending}
             />
             <button
               type="button"
               onClick={saveEdit}
               disabled={pending}
-              className="text-cyan hover:text-cyan/80 disabled:opacity-50"
+              className="text-admin-success hover:text-green-700 disabled:opacity-50"
               aria-label="Save"
             >
               <Check size={16} />
@@ -83,7 +84,7 @@ export default function CatalogEntityRow({ item, productCount, onUpdate, onToggl
               type="button"
               onClick={cancelEdit}
               disabled={pending}
-              className="text-white/40 hover:text-red-400 disabled:opacity-50"
+              className="text-slate-400 hover:text-admin-danger disabled:opacity-50"
               aria-label="Cancel"
             >
               <X size={16} />
@@ -92,32 +93,28 @@ export default function CatalogEntityRow({ item, productCount, onUpdate, onToggl
         ) : (
           item.name
         )}
-        {error && <p className="mt-1 text-xs font-normal text-red-400">{error}</p>}
+        {error && <p className="mt-1 text-xs font-normal text-admin-danger">{error}</p>}
       </td>
-      <td className="px-5 py-3 text-white/40">{item.slug}</td>
-      <td className="px-5 py-3 text-white/40">{productCount}</td>
-      <td className="px-5 py-3">
+      <td className="admin-td text-slate-400">{item.slug}</td>
+      <td className="admin-td text-slate-500">{productCount}</td>
+      <td className="admin-td">
         <button
           type="button"
           onClick={handleToggleActive}
           disabled={pending}
-          className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors disabled:opacity-50 ${
-            item.active
-              ? "bg-cyan/10 text-cyan hover:bg-cyan/20"
-              : "bg-red-500/10 text-red-400 hover:bg-red-500/20"
-          }`}
+          className="disabled:opacity-50"
           title="Click to toggle"
         >
-          {item.active ? "Active" : "Inactive"}
+          <Badge tone={item.active ? "green" : "red"} dot>{item.active ? "Active" : "Inactive"}</Badge>
         </button>
       </td>
-      <td className="px-5 py-3">
+      <td className="admin-td">
         <div className="flex items-center justify-end gap-3">
           {!editing && (
             <button
               type="button"
               onClick={() => setEditing(true)}
-              className="text-white/40 hover:text-electric-light"
+              className="text-slate-400 hover:text-admin-accent"
               aria-label="Edit"
               title="Edit"
             >

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { createPortal } from "react-dom";
-import { X } from "lucide-react";
+import { CalendarOff, X } from "lucide-react";
 import Button from "@/components/ui/Button";
 
 // Adapted from hardvanta/src/components/admin/delivery/AddHolidayModal.jsx.
@@ -40,34 +40,42 @@ export default function AddHolidayModal({ open, onClose, onSave }) {
   if (!mounted || !open) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[250] flex items-center justify-center bg-obsidian/70 backdrop-blur-md px-4">
-      <div className="glass-strong w-full max-w-sm rounded-3xl p-6">
+    <div className="fixed inset-0 z-[250] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4">
+      <div className="admin-shell w-full max-w-sm rounded-2xl border border-admin-border bg-white p-6 shadow-admin-popover">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-white">Add Holiday</h2>
-          <button type="button" onClick={onClose} aria-label="Close" className="text-white/50 hover:text-white">
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+            <CalendarOff size={18} className="text-admin-accent" />
+            Add Holiday
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="admin-focus-ring rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-900"
+          >
             <X size={18} />
           </button>
         </div>
         <form ref={formRef} onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="mb-1 block text-xs font-semibold text-white/50">Date</label>
+            <label className="admin-label">Date</label>
             <input
               type="date"
               name="date"
               required
-              className="w-full rounded-lg glass-card px-3 py-2.5 text-sm text-white outline-none focus:shadow-glow-electric"
+              className="admin-input"
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold text-white/50">Reason (optional)</label>
+            <label className="admin-label">Reason (optional)</label>
             <input
               name="reason"
               placeholder="e.g. Diwali"
-              className="w-full rounded-lg glass-card px-3 py-2.5 text-sm text-white outline-none focus:shadow-glow-electric placeholder:text-white/30"
+              className="admin-input"
             />
           </div>
-          {error && <p className="text-sm text-red-400">{error}</p>}
-          <Button type="submit" variant="gradient" className="w-full justify-center" disabled={pending}>
+          {error && <p className="text-sm font-medium text-admin-danger">{error}</p>}
+          <Button type="submit" variant="enterprise-primary" loading={pending} className="w-full justify-center">
             {pending ? "Saving…" : "Add Holiday"}
           </Button>
         </form>

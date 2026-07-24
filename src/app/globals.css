@@ -113,3 +113,118 @@ body {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* ──────────────────────────────────────────────────────────────────────
+   Admin panel design system — premium enterprise light theme.
+   Scoped entirely under `.admin-shell` / `admin-*` classes so none of it
+   leaks into the storefront-facing glass/brand tokens above, which the
+   auth pages still use as-is.
+   ────────────────────────────────────────────────────────────────────── */
+@layer components {
+  .admin-shell {
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    background: #f8fafc;
+    color: #0f172a;
+  }
+
+  .admin-card {
+    @apply rounded-2xl border border-admin-border bg-white shadow-admin-card;
+  }
+  .admin-card-hover {
+    @apply transition-shadow duration-200 hover:shadow-admin-card-hover;
+  }
+
+  .admin-input {
+    @apply w-full rounded-lg border border-admin-border bg-white px-3.5 py-2.5 text-sm text-admin-text outline-none transition-all duration-150 placeholder:text-slate-400;
+  }
+  .admin-input:focus {
+    @apply border-admin-accent shadow-admin-focus;
+  }
+  .admin-input:disabled {
+    @apply cursor-not-allowed bg-slate-50 text-slate-400;
+  }
+
+  .admin-label {
+    @apply mb-1.5 block text-sm font-medium text-slate-700;
+  }
+
+  .admin-select {
+    @apply w-full rounded-lg border border-admin-border bg-white px-3.5 py-2.5 text-sm text-admin-text outline-none transition-all duration-150 cursor-pointer pr-8 appearance-none;
+  }
+  .admin-select:focus {
+    @apply border-admin-accent shadow-admin-focus;
+  }
+  .admin-select:disabled {
+    @apply cursor-not-allowed bg-slate-50 text-slate-400;
+  }
+
+  .admin-checkbox {
+    @apply h-4 w-4 rounded border-slate-300 text-admin-accent focus:ring-2 focus:ring-admin-accent/30 focus:ring-offset-0;
+  }
+
+  .admin-focus-ring {
+    @apply outline-none transition-shadow duration-150 focus-visible:shadow-admin-focus focus-visible:border-admin-accent;
+  }
+
+  .admin-th {
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500;
+  }
+  .admin-td {
+    @apply px-4 py-3.5 text-sm text-slate-700;
+  }
+  .admin-row-hover {
+    @apply transition-colors duration-150 hover:bg-slate-50;
+  }
+
+  .admin-pill {
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
+
+  .admin-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+  }
+  .admin-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .admin-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .admin-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(148, 163, 184, 0.35);
+    border-radius: 9999px;
+  }
+  .admin-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(148, 163, 184, 0.55);
+  }
+
+  .admin-skeleton {
+    @apply relative overflow-hidden rounded-md bg-slate-200/70;
+  }
+  .admin-skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.55) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: adminShimmer 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes adminShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-skeleton::after {
+    animation: none !important;
+  }
+}

@@ -24,17 +24,17 @@ export default function Pagination({ page, totalPages, basePath, searchParams = 
   for (let i = start; i <= end; i++) pages.push(i);
 
   const pillClass = (active) =>
-    `flex h-9 min-w-9 items-center justify-center rounded-full px-2 text-sm font-medium transition-all ${
+    `admin-focus-ring flex h-9 min-w-9 items-center justify-center rounded-lg px-2 text-sm font-medium transition-colors ${
       active
-        ? "bg-gradient-to-r from-electric to-liquid text-white shadow-glow-electric"
-        : "glass text-white/70 hover:text-white hover:shadow-glow-electric"
+        ? "bg-admin-accent text-white"
+        : "border border-admin-border bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
     }`;
 
-  const disabledClass = "flex h-9 w-9 items-center justify-center rounded-full glass text-white/20 cursor-not-allowed";
+  const disabledClass = "flex h-9 w-9 items-center justify-center rounded-lg border border-admin-border bg-slate-50 text-slate-300 cursor-not-allowed";
 
   return (
     <div className="mt-4 flex items-center justify-between gap-4">
-      <p className="text-sm text-white/40">
+      <p className="text-sm text-slate-500">
         Page {page} of {totalPages}
       </p>
       <nav aria-label="Pagination" className="flex items-center gap-1.5">
@@ -49,7 +49,7 @@ export default function Pagination({ page, totalPages, basePath, searchParams = 
         {start > 1 && (
           <>
             <Link href={hrefFor(1)} className={pillClass(false)}>1</Link>
-            {start > 2 && <span className="px-1 text-white/30">…</span>}
+            {start > 2 && <span className="px-1 text-slate-400">…</span>}
           </>
         )}
 
@@ -61,7 +61,7 @@ export default function Pagination({ page, totalPages, basePath, searchParams = 
 
         {end < totalPages && (
           <>
-            {end < totalPages - 1 && <span className="px-1 text-white/30">…</span>}
+            {end < totalPages - 1 && <span className="px-1 text-slate-400">…</span>}
             <Link href={hrefFor(totalPages)} className={pillClass(false)}>{totalPages}</Link>
           </>
         )}

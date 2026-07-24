@@ -53,44 +53,44 @@ export default function ConfirmModal({
           animate={{ opacity: 1 }}
           exit={reduce ? undefined : { opacity: 0 }}
           onClick={() => !loading && onClose()}
-          className="fixed inset-0 z-[250] flex items-center justify-center bg-obsidian/70 backdrop-blur-md px-4"
+          className="fixed inset-0 z-[250] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4"
         >
           <motion.div
-            initial={reduce ? false : { opacity: 0, scale: 0.95, y: 12 }}
+            initial={reduce ? false : { opacity: 0, scale: 0.96, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={reduce ? undefined : { opacity: 0, scale: 0.95, y: 12 }}
-            transition={{ type: "spring", stiffness: 340, damping: 28 }}
+            exit={reduce ? undefined : { opacity: 0, scale: 0.96, y: 12 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()}
             role="alertdialog"
             aria-modal="true"
             aria-labelledby={titleId}
             aria-describedby={description ? descId : undefined}
-            className="glass-strong w-full max-w-sm rounded-3xl p-6 text-center"
+            className="admin-shell w-full max-w-sm rounded-2xl border border-admin-border bg-white p-6 text-center shadow-admin-popover"
           >
             <div
               className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full ${
-                danger ? "bg-red-500/10 text-red-400" : "bg-electric/10 text-electric-light"
+                danger ? "bg-red-50 text-admin-danger" : "bg-blue-50 text-admin-accent"
               }`}
             >
               <AlertTriangle size={22} />
             </div>
-            <h3 id={titleId} className="mt-4 text-lg font-bold text-white">{title}</h3>
-            {description && <p id={descId} className="mt-1.5 text-sm text-white/50">{description}</p>}
-            {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+            <h3 id={titleId} className="mt-4 text-lg font-semibold text-slate-900">{title}</h3>
+            {description && <p id={descId} className="mt-1.5 text-sm text-slate-500">{description}</p>}
+            {error && <p className="mt-3 text-sm text-admin-danger">{error}</p>}
 
             <div className="mt-6 flex gap-3">
               <button
                 onClick={onClose}
                 disabled={loading}
-                className="flex-1 rounded-xl glass-card py-2.5 text-sm font-semibold text-white/70 hover:text-white transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-electric/50"
+                className="flex-1 rounded-lg border border-admin-border bg-white py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-admin-accent/40"
               >
                 {cancelLabel}
               </button>
               <Button
                 ref={confirmRef}
                 onClick={onConfirm}
-                disabled={loading}
-                variant={danger ? "primary" : "gradient"}
+                loading={loading}
+                variant={danger ? "enterprise-danger" : "enterprise-primary"}
                 className="flex-1 justify-center"
               >
                 {loading ? "Please wait…" : confirmLabel}

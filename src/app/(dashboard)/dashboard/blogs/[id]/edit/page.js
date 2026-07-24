@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import BlogForm from "@/components/admin/BlogForm";
+import PageHeader from "@/components/admin/ui/PageHeader";
 
 // Copied verbatim from hardvanta/src/app/admin/blogs/[id]/edit/page.js — only
 // the import path for prisma changed. `params` was already awaited in the
@@ -14,7 +15,7 @@ export default async function EditBlogPage({ params }) {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">Edit Blog</h1>
+      <PageHeader title="Edit Blog" />
       <BlogForm initial={blog} />
     </div>
   );

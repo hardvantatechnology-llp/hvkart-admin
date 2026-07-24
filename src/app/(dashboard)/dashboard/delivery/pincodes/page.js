@@ -3,6 +3,7 @@ import Pagination, { parsePage } from "@/components/admin/Pagination";
 import AdminSearchInput from "@/components/admin/AdminSearchInput";
 import PincodeRow from "@/components/admin/delivery/PincodeRow";
 import AddPincodeButton from "@/components/admin/delivery/AddPincodeButton";
+import PageHeader from "@/components/admin/ui/PageHeader";
 import { createPincode, updatePincode, togglePincodeActive, deletePincode } from "../actions";
 
 // Adapted from hardvanta/src/app/admin/delivery/pincodes/page.js —
@@ -46,37 +47,35 @@ export default async function PincodesPage({ searchParams: searchParamsPromise }
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Pincodes</h1>
-          <p className="text-sm text-white/40 mt-0.5">{total} total pincodes</p>
-        </div>
-        <AddPincodeButton areas={areas} onCreate={createPincode} />
-      </div>
+      <PageHeader
+        title="Pincodes"
+        description={`${total} total pincodes`}
+        actions={<AddPincodeButton areas={areas} onCreate={createPincode} />}
+      />
 
       <div className="mb-4">
         <AdminSearchInput placeholder="Search by pincode, locality or city…" basePath="/dashboard/delivery/pincodes" searchParams={searchParams} />
       </div>
 
-      <div className="overflow-hidden rounded-2xl glass-card">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03] text-left text-xs font-bold uppercase tracking-wider text-white/40">
-                <th className="px-5 py-3">Pincode</th>
-                <th className="px-5 py-3">Locality</th>
-                <th className="px-5 py-3">City</th>
-                <th className="px-5 py-3">COD</th>
-                <th className="px-5 py-3">Express</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3 text-right">Actions</th>
+              <tr className="border-b border-admin-border bg-slate-50/80">
+                <th className="admin-th">Pincode</th>
+                <th className="admin-th">Locality</th>
+                <th className="admin-th">City</th>
+                <th className="admin-th">COD</th>
+                <th className="admin-th">Express</th>
+                <th className="admin-th">Status</th>
+                <th className="admin-th text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-admin-border">
               {pincodes.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-12 text-center text-white/50">
-                    <Hash size={32} className="mx-auto mb-2 text-white/20" />
+                  <td colSpan={7} className="px-5 py-12 text-center text-slate-500">
+                    <Hash size={32} className="mx-auto mb-2 text-slate-300" />
                     No pincodes found
                   </td>
                 </tr>

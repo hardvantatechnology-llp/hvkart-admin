@@ -2,6 +2,7 @@
 
 import { forwardRef, useRef, useState, useCallback } from "react";
 import Link from "next/link";
+import { Loader2 } from "lucide-react";
 
 let rippleId = 0;
 
@@ -15,6 +16,8 @@ const Button = forwardRef(function Button({
   onMouseLeave,
   style,
   href,
+  loading = false,
+  disabled,
   ...props
 }, forwardedRef) {
   const innerRef = useRef(null);
@@ -53,6 +56,20 @@ const Button = forwardRef(function Button({
     "brand-ghost": "text-brand-muted hover:bg-brand-silver hover:text-brand-text",
     "brand-secondary":
       "bg-brand-steel text-white shadow-sm hover:bg-brand-navy hover:shadow-brand-glow",
+
+    // Admin panel (premium enterprise) variants — light theme, no glow/gradient.
+    // Kept separate from the dark-glass and storefront variants above so
+    // neither the login page nor the storefront is affected.
+    "enterprise-primary":
+      "bg-admin-accent text-white shadow-sm hover:bg-admin-accent-dark",
+    "enterprise-secondary":
+      "bg-slate-100 text-slate-700 hover:bg-slate-200",
+    "enterprise-outline":
+      "border border-admin-border bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50",
+    "enterprise-ghost":
+      "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+    "enterprise-danger":
+      "bg-admin-danger text-white shadow-sm hover:bg-red-700",
   };
 
   const sizes = {
@@ -109,7 +126,7 @@ const Button = forwardRef(function Button({
   );
 
   const Tag = href ? Link : "button";
-  const tagProps = href ? { href } : {};
+  const tagProps = href ? { href } : { disabled: disabled || loading };
 
   return (
     <Tag
@@ -118,6 +135,7 @@ const Button = forwardRef(function Button({
       onClick={handleClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      aria-busy={loading || undefined}
       style={{
         transform: `translate(${tilt.x}px, ${tilt.y}px)`,
         ...style,
@@ -125,6 +143,7 @@ const Button = forwardRef(function Button({
       {...tagProps}
       {...props}
     >
+      {loading && <Loader2 size={15} className="animate-spin" aria-hidden="true" />}
       {children}
       {ripples.map((r) => (
         <span

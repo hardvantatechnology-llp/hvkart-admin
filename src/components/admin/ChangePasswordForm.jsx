@@ -6,8 +6,8 @@ import Button from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
 
 /** Change-own-password form for the Profile page, driven by a bound Server
- * Action. Styled to match this project's existing admin forms (glass-card
- * inputs + gradient Button, e.g. NewCatalogEntityForm.jsx). */
+ * Action. Styled to match this project's existing admin forms (admin-input
+ * inputs + enterprise-primary Button, e.g. NewCatalogEntityForm.jsx). */
 export default function ChangePasswordForm({ onSubmit }) {
   const toast = useToast();
   const [error, setError] = useState("");
@@ -34,11 +34,11 @@ export default function ChangePasswordForm({ onSubmit }) {
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 max-w-sm">
-      {error && <p className="text-sm text-red-400">{error}</p>}
+    <form ref={formRef} onSubmit={handleSubmit} className="max-w-sm space-y-4">
+      {error && <p className="text-sm text-admin-danger">{error}</p>}
 
       <div>
-        <label htmlFor="currentPassword" className="mb-1.5 block text-sm font-medium text-white/70">
+        <label htmlFor="currentPassword" className="admin-label">
           Current password
         </label>
         <div className="relative">
@@ -49,13 +49,13 @@ export default function ChangePasswordForm({ onSubmit }) {
             autoComplete="current-password"
             required
             disabled={pending}
-            className="w-full rounded-lg glass-card px-3 py-2 pr-10 text-sm text-white outline-none focus:shadow-glow-electric"
+            className="admin-input pr-10"
           />
           <button
             type="button"
             onClick={() => setShowCurrent((v) => !v)}
             aria-label={showCurrent ? "Hide password" : "Show password"}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
           >
             {showCurrent ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
@@ -63,7 +63,7 @@ export default function ChangePasswordForm({ onSubmit }) {
       </div>
 
       <div>
-        <label htmlFor="newPassword" className="mb-1.5 block text-sm font-medium text-white/70">
+        <label htmlFor="newPassword" className="admin-label">
           New password
         </label>
         <div className="relative">
@@ -75,21 +75,21 @@ export default function ChangePasswordForm({ onSubmit }) {
             required
             minLength={8}
             disabled={pending}
-            className="w-full rounded-lg glass-card px-3 py-2 pr-10 text-sm text-white outline-none focus:shadow-glow-electric"
+            className="admin-input pr-10"
           />
           <button
             type="button"
             onClick={() => setShowNew((v) => !v)}
             aria-label={showNew ? "Hide password" : "Show password"}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
           >
             {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         </div>
-        <p className="mt-1 text-xs text-white/40">Minimum 8 characters.</p>
+        <p className="mt-1 text-xs text-slate-400">Minimum 8 characters.</p>
       </div>
 
-      <Button type="submit" variant="gradient" disabled={pending}>
+      <Button type="submit" variant="enterprise-primary" loading={pending}>
         {pending ? "Changing…" : "Change Password"}
       </Button>
     </form>

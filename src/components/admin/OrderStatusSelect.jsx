@@ -39,10 +39,10 @@ export default function OrderStatusSelect({ id, status }) {
       onChange={handleChange}
       disabled={busy}
       aria-label="Order status"
-      className="rounded-lg glass-card bg-graphite px-3 py-1.5 text-sm font-semibold text-white outline-none focus:shadow-glow-electric disabled:opacity-50"
+      className="admin-select py-1.5 text-sm font-semibold disabled:opacity-50"
     >
       {STATUSES.map((s) => (
-        <option key={s} value={s} className="bg-graphite text-white">{s}</option>
+        <option key={s} value={s}>{s}</option>
       ))}
     </select>
   );

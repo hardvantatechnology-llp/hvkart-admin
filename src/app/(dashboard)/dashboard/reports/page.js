@@ -3,6 +3,8 @@ import { formatDate } from "@/utils/formatDateTime";
 import Pagination, { parsePage } from "@/components/admin/Pagination";
 import AdminStatCard from "@/components/admin/AdminStatCard";
 import { IndianRupee, CheckCircle2, ShoppingCart, XCircle } from "lucide-react";
+import PageHeader from "@/components/admin/ui/PageHeader";
+import Badge from "@/components/admin/ui/Badge";
 
 // Adapted from hardvanta/src/app/admin/reports/page.js — searchParams is a
 // Promise in Next.js 16 (awaited below), import path updated, and
@@ -12,12 +14,12 @@ export const metadata = { title: "Reports — Admin" };
 
 const PAGE_SIZE = 20;
 
-const STATUS_STYLES = {
-  DELIVERED: "bg-cyan/10 text-cyan",
-  CANCELLED: "bg-red-500/10 text-red-400",
-  SHIPPED: "bg-liquid/10 text-liquid-light",
-  PROCESSING: "bg-electric/10 text-electric-light",
-  PENDING: "bg-amber-500/10 text-amber-300",
+const STATUS_TONE = {
+  DELIVERED: "green",
+  CANCELLED: "red",
+  SHIPPED: "purple",
+  PROCESSING: "blue",
+  PENDING: "amber",
 };
 
 export default async function ReportsPage({ searchParams: searchParamsPromise }) {
@@ -68,10 +70,7 @@ export default async function ReportsPage({ searchParams: searchParamsPromise })
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Reports</h1>
-        <p className="text-sm text-white/40 mt-0.5">Sales and performance reports</p>
-      </div>
+      <PageHeader title="Reports" description="Sales and performance reports" />
 
       {/* Summary */}
       <div className="grid grid-cols-2 gap-4 mb-6 lg:grid-cols-4">
@@ -82,27 +81,27 @@ export default async function ReportsPage({ searchParams: searchParamsPromise })
       </div>
 
       {/* Top Products */}
-      <div className="glass-strong rounded-2xl overflow-hidden mb-4">
-        <div className="px-5 py-4 border-b border-white/10">
-          <p className="text-xs font-bold uppercase tracking-wider text-electric-light">Top Selling Products</p>
+      <div className="admin-card overflow-hidden mb-4">
+        <div className="px-5 py-4 border-b border-admin-border">
+          <p className="text-sm font-semibold uppercase tracking-wider text-admin-accent">Top Selling Products</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-left text-xs font-bold uppercase tracking-wider text-white/40">
-                <th className="px-5 py-3">#</th>
-                <th className="px-5 py-3">Product</th>
-                <th className="px-5 py-3">Units Sold</th>
-                <th className="px-5 py-3">Revenue</th>
+              <tr className="border-b border-admin-border bg-slate-50/80">
+                <th className="admin-th">#</th>
+                <th className="admin-th">Product</th>
+                <th className="admin-th">Units Sold</th>
+                <th className="admin-th">Revenue</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-admin-border">
               {topProducts.map((p, i) => (
-                <tr key={p.productId} className="hover:bg-white/5 transition-colors">
-                  <td className="px-5 py-3 font-bold text-white/40">{i + 1}</td>
-                  <td className="px-5 py-3 font-semibold text-white/90">{p.productName}</td>
-                  <td className="px-5 py-3 text-white/40">{p._sum.quantity}</td>
-                  <td className="px-5 py-3 font-bold text-white">
+                <tr key={p.productId} className="admin-row-hover">
+                  <td className="admin-td font-bold text-slate-400">{i + 1}</td>
+                  <td className="admin-td font-semibold text-slate-900">{p.productName}</td>
+                  <td className="admin-td text-slate-400">{p._sum.quantity}</td>
+                  <td className="admin-td font-bold text-slate-900">
                     {formatPrice((p._sum.price || 0) * (p._sum.quantity || 0))}
                   </td>
                 </tr>
@@ -113,36 +112,34 @@ export default async function ReportsPage({ searchParams: searchParamsPromise })
       </div>
 
       {/* All Orders Table */}
-      <div className="glass-strong rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
-          <p className="text-xs font-bold uppercase tracking-wider text-electric-light">All Orders</p>
-          <span className="text-xs text-white/40">{totalOrderCount} orders</span>
+      <div className="admin-card overflow-hidden">
+        <div className="px-5 py-4 border-b border-admin-border flex items-center justify-between">
+          <p className="text-sm font-semibold uppercase tracking-wider text-admin-accent">All Orders</p>
+          <span className="text-xs text-slate-400">{totalOrderCount} orders</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-left text-xs font-bold uppercase tracking-wider text-white/40">
-                <th className="px-5 py-3">Order</th>
-                <th className="px-5 py-3">Customer</th>
-                <th className="px-5 py-3">Items</th>
-                <th className="px-5 py-3">Total</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3">Date</th>
+              <tr className="border-b border-admin-border bg-slate-50/80">
+                <th className="admin-th">Order</th>
+                <th className="admin-th">Customer</th>
+                <th className="admin-th">Items</th>
+                <th className="admin-th">Total</th>
+                <th className="admin-th">Status</th>
+                <th className="admin-th">Date</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-admin-border">
               {orders.map((order) => (
-                <tr key={order.id} className="hover:bg-white/5 transition-colors">
-                  <td className="px-5 py-3 font-semibold text-electric-light">#{order.id.slice(-8).toUpperCase()}</td>
-                  <td className="px-5 py-3 text-white/40">{order.user?.name || "—"}</td>
-                  <td className="px-5 py-3 text-white/40">{order._count.items}</td>
-                  <td className="px-5 py-3 font-bold text-white">{formatPrice(order.total)}</td>
-                  <td className="px-5 py-3">
-                    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_STYLES[order.status] || "bg-white/10 text-white"}`}>
-                      {order.status}
-                    </span>
+                <tr key={order.id} className="admin-row-hover">
+                  <td className="admin-td font-semibold text-admin-accent">#{order.id.slice(-8).toUpperCase()}</td>
+                  <td className="admin-td text-slate-400">{order.user?.name || "—"}</td>
+                  <td className="admin-td text-slate-400">{order._count.items}</td>
+                  <td className="admin-td font-bold text-slate-900">{formatPrice(order.total)}</td>
+                  <td className="admin-td">
+                    <Badge tone={STATUS_TONE[order.status] || "slate"}>{order.status}</Badge>
                   </td>
-                  <td className="px-5 py-3 text-white/40">
+                  <td className="admin-td text-slate-400">
                     {formatDate(order.createdAt)}
                   </td>
                 </tr>

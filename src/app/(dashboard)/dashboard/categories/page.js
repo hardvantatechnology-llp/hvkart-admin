@@ -2,6 +2,7 @@ import { Layers } from "lucide-react";
 import Pagination, { parsePage } from "@/components/admin/Pagination";
 import CatalogEntityRow from "@/components/admin/CatalogEntityRow";
 import NewCatalogEntityForm from "@/components/admin/NewCatalogEntityForm";
+import PageHeader from "@/components/admin/ui/PageHeader";
 import { createCategory, updateCategory, toggleCategoryActive, deleteCategory } from "./actions";
 
 // Adapted from hardvanta/src/app/admin/categories/page.js — searchParams is
@@ -30,31 +31,29 @@ export default async function CategoriesPage({ searchParams: searchParamsPromise
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Categories</h1>
-          <p className="text-sm text-white/40 mt-0.5">{total} total categories</p>
-        </div>
-        <NewCatalogEntityForm label="category" onCreate={createCategory} />
-      </div>
+      <PageHeader
+        title="Categories"
+        description={`${total} total categories`}
+        actions={<NewCatalogEntityForm label="category" onCreate={createCategory} />}
+      />
 
-      <div className="overflow-hidden rounded-2xl glass-card">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03] text-left text-xs font-bold uppercase tracking-wider text-white/40">
-                <th className="px-5 py-3">Name</th>
-                <th className="px-5 py-3">Slug</th>
-                <th className="px-5 py-3">Products</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3 text-right">Actions</th>
+              <tr className="border-b border-admin-border bg-slate-50/80">
+                <th className="admin-th">Name</th>
+                <th className="admin-th">Slug</th>
+                <th className="admin-th">Products</th>
+                <th className="admin-th">Status</th>
+                <th className="admin-th text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-admin-border">
               {categories.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-12 text-center text-white/50">
-                    <Layers size={32} className="mx-auto mb-2 text-white/20" />
+                  <td colSpan={5} className="px-5 py-12 text-center text-slate-500">
+                    <Layers size={32} className="mx-auto mb-2 text-slate-300" />
                     No categories found
                   </td>
                 </tr>
