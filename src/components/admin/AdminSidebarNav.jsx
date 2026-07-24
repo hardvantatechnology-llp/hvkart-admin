@@ -10,8 +10,10 @@ import {
   TrendingUp, BarChart2, Image as ImageIcon, UserCog, Store,
   Menu, X, Building2, ClipboardList, CircuitBoard, FileBarChart,
   MapPin, Hash, SlidersHorizontal, CalendarOff, Send,
+  ShieldCheck, History, UserCircle,
 } from "lucide-react";
 import SwitchToUserView from "./SwitchToUserView";
+import LogoutButton from "./LogoutButton";
 
 // Adapted from hardvanta/src/components/admin/AdminSidebarNav.jsx — same
 // sections, labels, icons, and order. Only the URL prefix changed
@@ -86,6 +88,9 @@ const SECTIONS = [
     label: "System",
     items: [
       { href: "/dashboard/settings", label: "Settings", icon: Settings },
+      { href: "/dashboard/admins", label: "Admins", icon: ShieldCheck },
+      { href: "/dashboard/activity-log", label: "Activity Log", icon: History },
+      { href: "/dashboard/profile", label: "Profile", icon: UserCircle },
     ],
   },
 ];
@@ -152,6 +157,7 @@ export default function AdminSidebarNav() {
             >
               <Home size={16} /> Back to store
             </Link>
+            <LogoutButton />
           </div>
         </nav>
       </div>

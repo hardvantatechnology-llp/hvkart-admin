@@ -54,6 +54,15 @@ export async function POST(request) {
       );
     }
 
+    // A disabled admin (Admin Users page) must not get an OTP either —
+    // authorize() enforces this same rule again right before session creation.
+    if (user.isActive === false) {
+      return NextResponse.json(
+        { error: "Access denied. You are not authorized to access the admin panel." },
+        { status: 403 }
+      );
+    }
+
     // Generate a 6-digit code valid for 10 minutes using a CSPRNG.
     const code = String(randomInt(100000, 1000000));
     const expires = new Date(Date.now() + 10 * 60 * 1000);

@@ -20,8 +20,14 @@ model User {
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   passwordChangedAt    DateTime?
+  // Additive-only fields for hvkart-admin's admin-management features
+  // (Admin Users page, Profile page). Not used by hardvanta's storefront;
+  // nullable/defaulted so existing rows and other apps' queries are unaffected.
+  lastLoginAt          DateTime?
+  isActive             Boolean               @default(true)
   accounts             Account[]
   addresses            Address[]
+  activityLogs         AdminActivityLog[]
   cart                 CartItem[]
   notifications        Notification[]
   orders               Order[]
@@ -29,6 +35,25 @@ model User {
   sessions             Session[]
   userSelectedLocation UserSelectedLocation?
   wishlists            Wishlist[]
+}
+
+// New, additive-only model for hvkart-admin's Activity Log feature. Tracks
+// admin login/logout and mutations (products, orders, coupons, admin-user
+// management). userId is optional + onDelete: SetNull so log history
+// survives even if the admin account that performed the action is later
+// deleted.
+model AdminActivityLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  userEmail String
+  userName  String?
+  action    String
+  details   String?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([createdAt])
 }
 
 model Account {

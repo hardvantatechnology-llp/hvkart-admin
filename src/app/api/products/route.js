@@ -3,7 +3,8 @@
 // paths changed (@/lib/admin -> @/lib/auth/session, @/lib/prisma -> @/lib/database/prisma).
 import { NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
-import { isAdmin } from "@/lib/auth/session";
+import { getAdminSession } from "@/lib/auth/session";
+import { logActivity } from "@/lib/activityLog";
 
 export const dynamic = "force-dynamic";
 
@@ -105,7 +106,8 @@ export async function GET(request) {
 
 // POST /api/products — create a product (admin only).
 export async function POST(request) {
-  if (!(await isAdmin())) {
+  const session = await getAdminSession();
+  if (!session) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   const body = await request.json();
@@ -198,6 +200,7 @@ export async function POST(request) {
       },
     });
     revalidateTag("products");
+    await logActivity({ user: session.user, action: "PRODUCT_CREATE", details: `Created product ${product.name} (SKU ${product.sku})` });
     return NextResponse.json({ product }, { status: 201 });
   } catch (err) {
     if (err.code === "P2002") {

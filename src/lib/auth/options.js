@@ -6,6 +6,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import { checkRateLimit, getClientIp } from "@/lib/auth/rateLimit";
+import { logActivity } from "@/lib/activityLog";
 
 // Fixed dummy hash used to keep authorize()'s response time constant whether
 // or not the account exists — prevents timing-based email enumeration.
@@ -65,6 +66,13 @@ export async function getAuthOptions() {
           // second, authoritative gate right before session creation.
           if (user.role !== "ADMIN") return null;
 
+          // A disabled admin (Admin Users page) must not be able to sign in
+          // even with a correct password + OTP, same two-layer gate as role.
+          if (user.isActive === false) return null;
+
+          await prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
+          await logActivity({ user, action: "LOGIN" });
+
           return { id: user.id, name: user.name, email: user.email, role: user.role };
         },
       }),
@@ -88,6 +96,7 @@ export async function getAuthOptions() {
         if (!user && token.id && (!token.validatedAt || Date.now() - token.validatedAt > REVALIDATE_INTERVAL_MS)) {
           const dbUser = await prisma.user.findUnique({ where: { id: token.id } });
           if (!dbUser) return {}; // account deleted — drop the session
+          if (dbUser.isActive === false) return {}; // admin disabled since this token was issued
           const dbPwdChangedAt = dbUser.passwordChangedAt ? new Date(dbUser.passwordChangedAt).getTime() : 0;
           if (dbPwdChangedAt !== (token.pwdChangedAt || 0)) return {}; // password changed since this token was issued
           token.role = dbUser.role ?? "USER";
@@ -104,6 +113,14 @@ export async function getAuthOptions() {
           session.user.role = token.role;
         }
         return session;
+      },
+    },
+
+    events: {
+      async signOut({ token }) {
+        if (token?.id) {
+          await logActivity({ user: { id: token.id, email: token.email, name: token.name }, action: "LOGOUT" });
+        }
       },
     },
 

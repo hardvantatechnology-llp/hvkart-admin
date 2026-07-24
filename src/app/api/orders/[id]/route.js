@@ -5,10 +5,11 @@
 // uncommitted trackingNumber/courierName/estimatedDeliveryAt support (see
 // MIGRATION_LOG.md — applied as part of this Orders migration).
 import { NextResponse } from "next/server";
-import { isAdmin } from "@/lib/auth/session";
+import { getAdminSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/database/prisma";
 import { cancelOrder } from "@/app/api/orders/_cancel";
 import { buildOrderStatusPatch, buildPaymentSyncPatch } from "@/lib/orderStatus";
+import { logActivity } from "@/lib/activityLog";
 import {
   sendOrderShippedEmail,
   sendOrderOutForDeliveryEmail,
@@ -35,7 +36,8 @@ const STATUS_EMAIL_SENDERS = {
 };
 
 export async function PATCH(request, { params }) {
-  if (!(await isAdmin())) {
+  const session = await getAdminSession();
+  if (!session) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   const { id } = await params;
@@ -80,6 +82,7 @@ export async function PATCH(request, { params }) {
         );
       }
       const order = await prisma.order.findUnique({ where: { id }, include: { payment: true } });
+      await logActivity({ user: session.user, action: "ORDER_STATUS_UPDATE", details: `Order ${id} ${existing.status} -> CANCELLED` });
       return NextResponse.json({ order });
     }
 
@@ -120,6 +123,8 @@ export async function PATCH(request, { params }) {
     if (!order) {
       return NextResponse.json({ error: "Order not found." }, { status: 404 });
     }
+
+    await logActivity({ user: session.user, action: "ORDER_STATUS_UPDATE", details: `Order ${id} ${existing.status} -> ${status}` });
 
     // Best-effort — a failed status-update email must never fail the
     // already-committed status change. Only fires on an actual transition

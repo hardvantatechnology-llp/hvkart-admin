@@ -4,7 +4,8 @@
 // was a plain object in hardvanta's Next 14).
 import { NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
-import { isAdmin } from "@/lib/auth/session";
+import { getAdminSession } from "@/lib/auth/session";
+import { logActivity } from "@/lib/activityLog";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +27,8 @@ export async function GET(request, { params }) {
 
 // PUT /api/products/[id] — update a product (admin only).
 export async function PUT(request, { params }) {
-  if (!(await isAdmin())) {
+  const session = await getAdminSession();
+  if (!session) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   const { id } = await params;
@@ -124,6 +126,7 @@ export async function PUT(request, { params }) {
       data,
     });
     revalidateTag("products");
+    await logActivity({ user: session.user, action: "PRODUCT_UPDATE", details: `Updated product ${product.name}` });
     return NextResponse.json({ product });
   } catch (err) {
     if (err.code === "P2002") {
@@ -142,12 +145,14 @@ export async function PUT(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
-  if (!(await isAdmin())) {
+  const session = await getAdminSession();
+  if (!session) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   const { id } = await params;
   const { prisma } = await import("@/lib/database/prisma");
   try {
+    const existing = await prisma.product.findUnique({ where: { id }, select: { name: true } });
     const orderCount = await prisma.orderItem.count({
       where: { productId: id },
     });
@@ -159,6 +164,7 @@ export async function DELETE(request, { params }) {
         data: { active: false },
       });
       revalidateTag("products");
+      await logActivity({ user: session.user, action: "PRODUCT_DEACTIVATE", details: `Deactivated product ${existing?.name || id} (has existing orders)` });
       return NextResponse.json({
         ok: true,
         message: "Product deactivated because it has existing orders.",
@@ -173,6 +179,7 @@ export async function DELETE(request, { params }) {
     await prisma.product.delete({ where: { id } });
 
     revalidateTag("products");
+    await logActivity({ user: session.user, action: "PRODUCT_DELETE", details: `Deleted product ${existing?.name || id}` });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error(err);
